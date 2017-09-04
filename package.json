@@ -8,12 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rkoeninger/syntax-cypher.git"
+    "url": "https://github.com/rkoeninger/syntax-cypher.git"
   },
   "author": "Robert Koeninger",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/rkoeninger/syntax-cypher/issues"
   },
-  "homepage": "https://github.com/rkoeninger/syntax-cypher#readme"
+  "homepage": "https://github.com/rkoeninger/syntax-cypher#readme",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  }
 }
