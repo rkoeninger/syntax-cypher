@@ -1,0 +1,19 @@
+{
+  "name": "syntax-cypher",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rkoeninger/syntax-cypher.git"
+  },
+  "author": "Robert Koeninger",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rkoeninger/syntax-cypher/issues"
+  },
+  "homepage": "https://github.com/rkoeninger/syntax-cypher#readme"
+}
