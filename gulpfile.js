@@ -11,3 +11,7 @@ gulp.task("build", () =>
         .pipe(gulp.dest("./js")));
 
 gulp.task("clean", () => del(["./js"]));
+
+gulp.task("test", () => {
+    console.log("no tests defined.");
+});

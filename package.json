@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "test": "echo \"No tests defined\""
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
