@@ -1,9 +1,10 @@
-var gulp = require('gulp'),
-    ls = require('gulp-livescript');
+var gulp = require("gulp"),
+    gutil = require("gulp-util"),
+    ls = require("gulp-livescript");
 
-// define tasks here
-gulp.task('default', function(){
-    console.log('test');
-    // run tasks here
-    // set up watch handlers here
-});
+gulp.task("default", ["build"]);
+
+gulp.task("build", () =>
+    gulp.src("./src/**/*.ls")
+        .pipe(ls({bare: true}).on('error', gutil.log))
+        .pipe(gulp.dest("./js")));
