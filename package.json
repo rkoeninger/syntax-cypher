@@ -16,6 +16,7 @@
   },
   "homepage": "https://github.com/rkoeninger/syntax-cypher",
   "devDependencies": {
+    "del": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-util": "^3.0.8",
     "gulp-livescript": "^3.0.1",
