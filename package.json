@@ -2,7 +2,6 @@
   "name": "syntax-cypher",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,8 +14,9 @@
   "bugs": {
     "url": "https://github.com/rkoeninger/syntax-cypher/issues"
   },
-  "homepage": "https://github.com/rkoeninger/syntax-cypher#readme",
-  "dependencies": {
-    "gulp": "^3.9.1"
+  "homepage": "https://github.com/rkoeninger/syntax-cypher",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-livescript": "^3.0.1"
   }
 }
