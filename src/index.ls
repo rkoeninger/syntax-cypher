@@ -23,28 +23,26 @@ ops =
         (defop \sqrt, 1, false)]
 
 unvary-application = (op, args, arity) ->
-    | empty args
-        op
-    | otherwise
-        [these, those] = split-at (arity - 1), args
-        cons op, these |> unvary-application _, those, arity
-
-vary-application = (op, args, arity) ->
     | args.length <= arity
         cons op, args
     | otherwise
-        embed = (expr) ->
-            | is-type \Array expr and head expr == op
-                tail expr
-            | otherwise
-                [expr]
-        concat-map embed, args |> cons op
+        [these, those] = split-at (arity - 1), args
+        nested = unvary-application op, those, arity
+        cons op, these |> cons-last _, nested
+
+vary-application = (op, args, arity) ->
+    embed = (expr) ->
+        | is-type \Array expr and op == head expr
+            tail expr
+        | otherwise
+            [expr]
+    concat-map embed, args |> cons op
 
 split-variadic = (expr) ->
     | is-type \Array expr
         [op, args] = snoc expr
         {variadic, arity} = ops[op]
-        if variadic and arity > args.length then
+        if variadic and arity < args.length then
             unvary-application op, args, arity
         else
             map split-variadic, args |> cons op
@@ -55,22 +53,20 @@ combine-variadic = (expr) ->
     | is-type \Array expr
         [op, args] = snoc expr
         {variadic, arity} = ops[op]
-        if variadic and arity > args.length then
+        if variadic then
             vary-application op, args, arity
         else
             map combine-variadic, args |> cons op
     | otherwise
         expr
 
-# TODO: enable variadicity
-sexpr-to-postfix = /*split-variadic >> */(expr) ->
+sexpr-to-postfix = split-variadic >> (expr) ->
     | is-type \Array expr
         [op, args] = snoc expr
         concat-map sexpr-to-postfix, args |> cons-last _, op
     | otherwise
         [expr]
 
-# TODO: enable variadicity
 postfix-to-sexpr = (line) ->
     push-word = (stack, item) ->
         | item of ops
@@ -79,7 +75,7 @@ postfix-to-sexpr = (line) ->
             cons item, args |> cons _, stack
         | otherwise
             cons item, stack
-    fold push-word, [], line |> head/* |> combine-variadic*/
+    fold push-word, [], line |> head |> combine-variadic
 
 format-sexpr = (expr) ->
     | is-type \Array expr
