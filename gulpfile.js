@@ -15,3 +15,5 @@ gulp.task("clean", () => del(["./js"]));
 gulp.task("test", () => {
     console.log("no tests defined.");
 });
+
+gulp.task("watch", () => gulp.watch("./src/**/*.ls", ["build"]));
