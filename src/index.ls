@@ -1,4 +1,4 @@
-require! \prelude-ls : {concat, concat-map, empty, filter, foldr, head, is-type, map, pairs-to-obj, split-at, tail}
+require! \prelude-ls : {concat, concat-map, empty, filter, fold, head, is-type, join, map, pairs-to-obj, split-at, tail}
 
 cons = (item, list) --> concat [[item], list]
 cons-last = (list, item) --> concat [list, [item]]
@@ -62,6 +62,7 @@ combine-variadic = (expr) ->
     | otherwise
         expr
 
+# TODO: enable variadicity
 sexpr-to-postfix = /*split-variadic >> */(expr) ->
     | is-type \Array expr
         [op, args] = snoc expr
@@ -69,12 +70,21 @@ sexpr-to-postfix = /*split-variadic >> */(expr) ->
     | otherwise
         [expr]
 
+# TODO: enable variadicity
 postfix-to-sexpr = (line) ->
-    push-word = (item, stack) ->
+    push-word = (stack, item) ->
         | item of ops
             {arity} = ops[item]
             [args, stack] = split-at arity, stack
             cons item, args |> cons _, stack
         | otherwise
             cons item, stack
-    foldr push-word, [], line |> head/* |> combine-variadic*/
+    fold push-word, [], line |> head/* |> combine-variadic*/
+
+format-sexpr = (expr) ->
+    | is-type \Array expr
+        "(#{map format-sexpr, expr |> join ' '})"
+    | otherwise
+        expr
+
+format-postfix = (line) -> join ' ' line
