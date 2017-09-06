@@ -30,10 +30,11 @@ unvary-application = (op, args, arity) ->
         nested = unvary-application op, those, arity
         cons op, these |> cons-last _, nested
 
+# TODO: this is broken
 vary-application = (op, args, arity) ->
     embed = (expr) ->
         | is-type \Array expr and op == head expr
-            tail expr
+            tail expr |> map vary-application
         | otherwise
             [expr]
     concat-map embed, args |> cons op

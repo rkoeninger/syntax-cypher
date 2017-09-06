@@ -10,10 +10,10 @@ gulp.task("build", () =>
         .pipe(ls({bare: true}).on("error", gutil.log))
         .pipe(gulp.dest("./js")));
 
-gulp.task("clean", () => del(["./js"]));
-
-gulp.task("test", () => {
+gulp.task("test", ["build"], () => {
     console.log("no tests defined.");
 });
+
+gulp.task("clean", () => del(["./js"]));
 
 gulp.task("watch", () => gulp.watch("./src/**/*.ls", ["build"]));
