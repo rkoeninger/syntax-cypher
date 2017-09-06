@@ -1,4 +1,4 @@
-require! \prelude-ls : {concat, concat-map, empty, filter, fold, head, is-type, join, map, pairs-to-obj, split-at, tail}
+require! \prelude-ls : {concat, concat-map, empty, filter, fold, head, is-type, join, map, pairs-to-obj, reverse, split-at, tail}
 
 cons = (item, list) --> concat [[item], list]
 cons-last = (list, item) --> concat [list, [item]]
@@ -72,7 +72,7 @@ postfix-to-sexpr = (line) ->
         | item of ops
             {arity} = ops[item]
             [args, stack] = split-at arity, stack
-            cons item, args |> cons _, stack
+            cons item, reverse args |> cons _, stack
         | otherwise
             cons item, stack
     fold push-word, [], line |> head |> combine-variadic
