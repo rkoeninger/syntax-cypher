@@ -23,6 +23,6 @@ gulp.task("test", ["build"], () => {
 gulp.task("clean", () => del(["./js", "./testjs"]));
 
 gulp.task("watch", () => {
-	gulp.watch("./src/**/*.ls", ["build"]);
-	gulp.watch("./test/**/*.ls", ["build"]);
+    gulp.watch("./src/**/*.ls", ["build"]);
+    gulp.watch("./test/**/*.ls", ["build"]);
 });

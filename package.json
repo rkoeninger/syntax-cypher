@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp build && gulp test"
   },
   "repository": {
     "type": "git",
@@ -18,9 +18,9 @@
   "devDependencies": {
     "del": "^3.0.0",
     "gulp": "^3.9.1",
-    "gulp-util": "^3.0.8",
     "gulp-livescript": "^3.0.1",
     "gulp-mocha": "^4.3.1",
+    "gulp-util": "^3.0.8",
     "livescript": "^1.4.0",
     "mocha": "^3.5.0",
     "prelude-ls": "^1.1.2"
