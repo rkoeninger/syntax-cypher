@@ -4,21 +4,23 @@ var del = require("del"),
     gutil = require("gulp-util"),
     ls = require("gulp-livescript");
 
-gulp.task("default", ["build"]);
+gulp.task("default", ["test"]);
 
-gulp.task("build", () => {
+gulp.task("build-src", () =>
     gulp.src("./src/**/*.ls")
         .pipe(ls({bare: true}).on("error", gutil.log))
-        .pipe(gulp.dest("./js"));
+        .pipe(gulp.dest("./js")));
+
+gulp.task("build-test", () =>
     gulp.src("./test/**/*.ls")
         .pipe(ls({bare: true}).on("error", gutil.log))
-        .pipe(gulp.dest("./testjs"));
-});
+        .pipe(gulp.dest("./testjs")));
 
-gulp.task("test", ["build"], () => {
+gulp.task("build", ["build-src", "build-test"]);
+
+gulp.task("test", ["build"], () =>
     gulp.src("./testjs/**/*.js", {read: false})
-        .pipe(mocha({reporter: "spec"}));
-});
+        .pipe(mocha({reporter: "spec"})));
 
 gulp.task("clean", () => del(["./js", "./testjs"]));
 
