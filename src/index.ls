@@ -22,29 +22,35 @@ ops =
         (defop \neg,  1, false),
         (defop \sqrt, 1, false)]
 
-unvary-application = (op, args, arity) ->
+unvary-application = (op, arity, args) ->
     | args.length <= arity
         cons op, args
     | otherwise
         [these, those] = split-at (arity - 1), args
-        nested = unvary-application op, those, arity
+        nested = unvary-application op, arity, those
         cons op, these |> cons-last _, nested
 
-# TODO: this is broken
-vary-application = (op, args, arity) ->
-    embed = (expr) ->
+vary-application-h = (op, arity, args) ->
+    recur = (expr) ->
         | is-type \Array expr and op == head expr
-            tail expr |> map vary-application
+            vary-application-h op, arity, expr
+        | otherwise
+            expr
+    lift = (expr) ->
+        | is-type \Array expr and op == head expr
+            tail expr
         | otherwise
             [expr]
-    concat-map embed, args |> cons op
+    map recur, args |> concat-map lift
+
+vary-application = (op, arity, args) -> vary-application-h op, arity, args |> cons op
 
 split-variadic = (expr) ->
     | is-type \Array expr
         [op, args] = snoc expr
         {variadic, arity} = ops[op]
         if variadic and arity < args.length then
-            unvary-application op, args, arity
+            unvary-application op, arity, args
         else
             map split-variadic, args |> cons op
     | otherwise
@@ -55,7 +61,7 @@ combine-variadic = (expr) ->
         [op, args] = snoc expr
         {variadic, arity} = ops[op]
         if variadic then
-            vary-application op, args, arity
+            vary-application op, arity, args
         else
             map combine-variadic, args |> cons op
     | otherwise
