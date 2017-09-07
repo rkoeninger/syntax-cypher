@@ -1,7 +1,7 @@
 require! \prelude-ls : {concat, concat-map, empty, filter, fold, head, is-type, join, map, pairs-to-obj, reverse, split-at, tail}
 
 cons = (item, list) --> concat [[item], list]
-cons-last = (list, item) --> concat [list, [item]]
+cons-last = (item, list) --> concat [list, [item]]
 snoc = (list) -> [(head list), (tail list)]
 
 class Operator
@@ -28,7 +28,7 @@ unvary-application = (op, arity, args) ->
     | otherwise
         [these, those] = split-at (arity - 1), args
         nested = unvary-application op, arity, those
-        cons op, these |> cons-last _, nested
+        cons op, these |> cons-last nested
 
 vary-application-h = (op, arity, args) ->
     recur = (expr) ->
@@ -70,7 +70,7 @@ combine-variadic = (expr) ->
 sexpr-to-postfix = split-variadic >> (expr) ->
     | is-type \Array expr
         [op, args] = snoc expr
-        concat-map sexpr-to-postfix, args |> cons-last _, op
+        concat-map sexpr-to-postfix, args |> cons-last op
     | otherwise
         [expr]
 
