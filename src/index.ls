@@ -3,6 +3,7 @@ require! \prelude-ls : {concat, concat-map, empty, filter, fold, head, is-type, 
 cons = (item, list) --> concat [[item], list]
 cons-last = (item, list) --> concat [list, [item]]
 snoc = (list) -> [(head list), (tail list)]
+is-array = is-type \Array
 
 class Operator
     (name, arity, variadic) ->
@@ -32,12 +33,12 @@ unvary-application = (op, arity, args) ->
 
 vary-application-h = (op, arity, args) ->
     recur = (expr) ->
-        | is-type \Array expr and op == head expr
+        | is-array expr and op == head expr
             vary-application-h op, arity, expr
         | otherwise
             expr
     lift = (expr) ->
-        | is-type \Array expr and op == head expr
+        | is-array expr and op == head expr
             tail expr
         | otherwise
             [expr]
@@ -46,7 +47,7 @@ vary-application-h = (op, arity, args) ->
 vary-application = (op, arity, args) -> vary-application-h op, arity, args |> cons op
 
 split-variadic = (expr) ->
-    | is-type \Array expr
+    | is-array expr
         [op, args] = snoc expr
         {variadic, arity} = ops[op]
         if variadic and arity < args.length then
@@ -57,7 +58,7 @@ split-variadic = (expr) ->
         expr
 
 combine-variadic = (expr) ->
-    | is-type \Array expr
+    | is-array expr
         [op, args] = snoc expr
         {variadic, arity} = ops[op]
         if variadic then
@@ -68,7 +69,7 @@ combine-variadic = (expr) ->
         expr
 
 sexpr-to-postfix = split-variadic >> (expr) ->
-    | is-type \Array expr
+    | is-array expr
         [op, args] = snoc expr
         concat-map sexpr-to-postfix, args |> cons-last op
     | otherwise
@@ -85,7 +86,7 @@ postfix-to-sexpr = (line) ->
     fold push-word, [], line |> head |> combine-variadic
 
 format-sexpr = (expr) ->
-    | is-type \Array expr
+    | is-array expr
         "(#{map format-sexpr, expr |> join ' '})"
     | otherwise
         expr
