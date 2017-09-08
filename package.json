@@ -1,7 +1,7 @@
 {
   "name": "syntax-cypher",
   "version": "0.0.1",
-  "description": "",
+  "description": "Reactive webpage that translates syntax forms",
   "scripts": {
     "test": "gulp test"
   },
