@@ -2,7 +2,6 @@ require! \prelude-ls : {concat, concat-map, fold, head, is-type, join, map, pair
 
 cons = (item, list) --> concat [[item], list]
 cons-last = (item, list) --> concat [list, [item]]
-snoc = (list) -> [(head list), (tail list)]
 is-array = is-type \Array
 
 class Operator
@@ -48,7 +47,7 @@ vary-application = (op, arity, args) -> vary-application-h op, arity, args |> co
 
 split-variadic = (expr) ->
     | is-array expr
-        [op, args] = snoc expr
+        [op, ...args] = expr
         {variadic, arity} = ops[op]
         if variadic and arity < args.length then
             unvary-application op, arity, args
@@ -59,7 +58,7 @@ split-variadic = (expr) ->
 
 combine-variadic = (expr) ->
     | is-array expr
-        [op, args] = snoc expr
+        [op, ...args] = expr
         {variadic, arity} = ops[op]
         if variadic then
             vary-application op, arity, args
@@ -70,7 +69,7 @@ combine-variadic = (expr) ->
 
 sexpr-to-postfix = split-variadic >> (expr) ->
     | is-array expr
-        [op, args] = snoc expr
+        [op, ...args] = expr
         concat-map sexpr-to-postfix, args |> cons-last op
     | otherwise
         [expr]
@@ -84,6 +83,17 @@ postfix-to-sexpr = (line) ->
         | otherwise
             cons item, stack
     fold push-word, [], line |> head |> combine-variadic
+
+sexpr-to-katex = split-variadic >> (expr) ->
+    | is-array expr
+        [op, ...args] = expr
+        switch op
+        | \* => "{#{sexpr-to-katex args[0]} #{sexpr-to-katex args[1]}}"
+        | \+ \- \/ \^ => "{#{sexpr-to-katex args[0]} #{op} #{sexpr-to-katex args[1]}}"
+        | \neg => "{- #{sexpr-to-katex args[0]}}"
+        | \sqrt => "\\sqrt #{sexpr-to-katex args[0]}"
+    | otherwise
+        expr
 
 format-sexpr = (expr) ->
     | is-array expr
