@@ -1,4 +1,4 @@
-require! \prelude-ls : {concat, concat-map, empty, filter, fold, head, is-type, join, map, pairs-to-obj, reverse, split-at, tail}
+require! \prelude-ls : {concat, concat-map, fold, head, is-type, join, map, pairs-to-obj, reverse, split-at, tail}
 
 cons = (item, list) --> concat [[item], list]
 cons-last = (item, list) --> concat [list, [item]]
