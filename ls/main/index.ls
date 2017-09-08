@@ -5,22 +5,24 @@ cons-last = (item, list) --> concat [list, [item]]
 is-array = is-type \Array
 
 class Operator
-    (name, arity, variadic) ->
+    (name, arity, variadic, fixity, precedence) ->
         @name = name
         @arity = arity
         @variadic = variadic
+        @fixity = fixity
+        @precedence = precedence
 
 defop = (name, arity, variadic) -> [name, new Operator name, arity, variadic]
 
 ops =
     pairs-to-obj [
-        (defop \+,    2, true),
-        (defop \*,    2, true),
-        (defop \-,    2, false),
-        (defop \/,    2, false),
-        (defop \^,    2, false),
-        (defop \neg,  1, false),
-        (defop \sqrt, 1, false)]
+        (defop \+,    2, true,  \infix,  3),
+        (defop \-,    2, false, \infix,  3),
+        (defop \*,    2, true,  \infix,  2),
+        (defop \/,    2, false, \infix,  2),
+        (defop \^,    2, false, \infix,  1),
+        (defop \neg,  1, false, \prefix, 1),
+        (defop \sqrt, 1, false, \prefix, 4)]
 
 unvary-application = (op, arity, args) ->
     | args.length <= arity
@@ -84,7 +86,7 @@ postfix-to-sexpr = (line) ->
             cons item, stack
     fold push-word, [], line |> head |> combine-variadic
 
-sexpr-to-katex = split-variadic >> (expr) ->
+sexpr-to-katex = (expr) ->
     | is-array expr
         [op, ...args] = expr
         switch op
