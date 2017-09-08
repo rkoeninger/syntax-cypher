@@ -1,26 +1,22 @@
 var del = require("del"),
     gulp = require("gulp"),
-    mocha = require("gulp-mocha"),
+    mocha = require("gulp-mocha")({reporter: "spec"}),
     gutil = require("gulp-util"),
-    ls = require("gulp-livescript"),
+    ls = require("gulp-livescript")({bare: true}).on("error", gutil.log),
 
-    lsFiles = "./ls/**/*.ls",
+    dest = gulp.dest.bind(gulp),
+    src = gulp.src.bind(gulp),
+    task = gulp.task.bind(gulp),
+    watch = gulp.watch.bind(gulp),
+
     jsRoot = "./js",
+    lsFiles = "./ls/**/*.ls",
     testFiles = jsRoot + "/test/**/*.js";
 
-gulp.task("default", ["test"]);
+task("build", () => src(lsFiles).pipe(ls).pipe(dest(jsRoot)));
 
-gulp.task("build", () =>
-    gulp.src(lsFiles)
-        .pipe(ls({bare: true}).on("error", gutil.log))
-        .pipe(gulp.dest(jsRoot)));
+task("clean", () => del([jsRoot]));
 
-gulp.task("test", ["build"], () =>
-    gulp.src(testFiles, {read: false})
-        .pipe(mocha({reporter: "spec"})));
+task("test", ["build"], () => src(testFiles, {read: false}).pipe(mocha));
 
-gulp.task("clean", () => del([jsRoot]));
-
-gulp.task("watch", () => {
-    gulp.watch(lsFiles, ["build"]);
-});
+task("watch", () => watch(lsFiles, ["build"]));
