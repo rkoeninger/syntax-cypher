@@ -2,7 +2,7 @@ var del = require("del"),
     gulp = require("gulp"),
     mocha = require("gulp-mocha")({reporter: "spec"}),
     gutil = require("gulp-util"),
-    ls = require("gulp-livescript")({bare: true}).on("error", gutil.log),
+    lsc = require("gulp-livescript")({bare: true}).on("error", gutil.log),
 
     dest = gulp.dest.bind(gulp),
     src = gulp.src.bind(gulp),
@@ -13,7 +13,7 @@ var del = require("del"),
     lsFiles = "./ls/**/*.ls",
     testFiles = jsRoot + "/test/**/*.js";
 
-task("build", () => src(lsFiles).pipe(ls).pipe(dest(jsRoot)));
+task("build", () => src(lsFiles).pipe(lsc).pipe(dest(jsRoot)));
 
 task("clean", () => del([jsRoot]));
 
