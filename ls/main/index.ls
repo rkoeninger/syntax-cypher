@@ -32,10 +32,10 @@ unvary-application = (op, arity, args) ->
         nested = unvary-application op, arity, those
         cons op, these |> cons-last nested
 
-vary-application-h = (op, arity, args) ->
+vary-application = (op, arity, args) ->
     recur = (expr) ->
         | is-array expr and op == head expr
-            vary-application-h op, arity, expr
+            vary-application op, arity, expr
         | otherwise
             expr
     lift = (expr) ->
@@ -45,14 +45,12 @@ vary-application-h = (op, arity, args) ->
             [expr]
     map recur, args |> concat-map lift
 
-vary-application = (op, arity, args) -> vary-application-h op, arity, args |> cons op
-
 split-variadic = (expr) ->
     | is-array expr
         [op, ...args] = expr
         {variadic, arity} = ops[op]
         if variadic and arity < args.length then
-            unvary-application op, arity, args
+            vary-application op, arity, args |> cons op
         else
             map split-variadic, args |> cons op
     | otherwise
@@ -81,7 +79,7 @@ postfix-to-sexpr = (line) ->
         | item of ops
             {arity} = ops[item]
             [args, stack] = split-at arity, stack
-            cons item, reverse args |> cons _, stack
+            reverse args |> cons item |> cons _, stack
         | otherwise
             cons item, stack
     fold push-word, [], line |> head |> combine-variadic
@@ -90,10 +88,16 @@ sexpr-to-katex = (expr) ->
     | is-array expr
         [op, ...args] = expr
         switch op
-        | \* => "{#{sexpr-to-katex args[0]} #{sexpr-to-katex args[1]}}"
-        | \+ \- \/ \^ => "{#{sexpr-to-katex args[0]} #{op} #{sexpr-to-katex args[1]}}"
+        | \* => "{#{map sexpr-to-katex, args |> join ' '}}"
+        | \+ => "{#{map sexpr-to-katex, args |> join ' + '}}"
+        | \- \^ => "{#{sexpr-to-katex args[0]} #{op} #{sexpr-to-katex args[1]}}"
+        | \/ =>
+            if is-array args[0] or is-array args[1] then
+                "{\\frac {#{sexpr-to-katex args[0]}}{#{sexpr-to-katex args[1]}}}"
+            else
+                "{#{sexpr-to-katex args[0]} / #{sexpr-to-katex args[1]}}"
         | \neg => "{- #{sexpr-to-katex args[0]}}"
-        | \sqrt => "\\sqrt #{sexpr-to-katex args[0]}"
+        | \sqrt => "{\\sqrt #{sexpr-to-katex args[0]}}"
     | otherwise
         expr
 
