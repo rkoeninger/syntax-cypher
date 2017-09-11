@@ -104,7 +104,7 @@ export sexpr-to-katex = (expr) ->
     | otherwise
         expr
 
-export sexpr-to-postfix = split-variadic >> (expr) ->
+export sexpr-to-postfix = combine-variadic >> split-variadic >> (expr) ->
     | is-array expr
         [op, ...args] = expr
         concat-map sexpr-to-postfix, args |> cons-last op
