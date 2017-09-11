@@ -50,7 +50,7 @@ split-variadic = (expr) ->
         [op, ...args] = expr
         {variadic, arity} = ops[op]
         if variadic and arity < args.length then
-            vary-application op, arity, args |> cons op
+            unvary-application op, arity, args
         else
             map split-variadic, args |> cons op
     | otherwise
@@ -61,20 +61,20 @@ combine-variadic = (expr) ->
         [op, ...args] = expr
         {variadic, arity} = ops[op]
         if variadic then
-            vary-application op, arity, args
+            vary-application op, arity, args |> cons op
         else
             map combine-variadic, args |> cons op
     | otherwise
         expr
 
-sexpr-to-postfix = split-variadic >> (expr) ->
+export sexpr-to-postfix = split-variadic >> (expr) ->
     | is-array expr
         [op, ...args] = expr
         concat-map sexpr-to-postfix, args |> cons-last op
     | otherwise
         [expr]
 
-postfix-to-sexpr = (line) ->
+export postfix-to-sexpr = (line) ->
     push-word = (stack, item) ->
         | item of ops
             {arity} = ops[item]
@@ -84,7 +84,7 @@ postfix-to-sexpr = (line) ->
             cons item, stack
     fold push-word, [], line |> head |> combine-variadic
 
-sexpr-to-katex = (expr) ->
+export sexpr-to-katex = (expr) ->
     | is-array expr
         [op, ...args] = expr
         switch op
@@ -101,10 +101,10 @@ sexpr-to-katex = (expr) ->
     | otherwise
         expr
 
-format-sexpr = (expr) ->
+export format-sexpr = (expr) ->
     | is-array expr
         "(#{map format-sexpr, expr |> join ' '})"
     | otherwise
         expr
 
-format-postfix = (line) -> join ' ' line
+export format-postfix = (line) -> join ' ' line
