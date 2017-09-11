@@ -19,4 +19,4 @@ task("clean", () => del([jsRoot]));
 
 task("test", ["build"], () => src(testFiles, {read: false}).pipe(mocha));
 
-task("watch", () => watch(lsFiles, ["build"]));
+task("watch", () => watch(lsFiles, ["test"]));

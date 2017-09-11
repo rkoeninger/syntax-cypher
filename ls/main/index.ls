@@ -24,6 +24,10 @@ ops =
         (defop \neg,  1, false, \prefix, 1),
         (defop \sqrt, 1, false, \prefix, 4)]
 
+#
+# Syntax manipulation helpers
+#
+
 unvary-application = (op, arity, args) ->
     | args.length <= arity
         cons op, args
@@ -67,12 +71,9 @@ combine-variadic = (expr) ->
     | otherwise
         expr
 
-export sexpr-to-postfix = split-variadic >> (expr) ->
-    | is-array expr
-        [op, ...args] = expr
-        concat-map sexpr-to-postfix, args |> cons-last op
-    | otherwise
-        [expr]
+#
+# Exported conversion functions
+#
 
 export postfix-to-sexpr = (line) ->
     push-word = (stack, item) ->
@@ -83,6 +84,8 @@ export postfix-to-sexpr = (line) ->
         | otherwise
             cons item, stack
     fold push-word, [], line |> head |> combine-variadic
+
+export postfix-to-string = (line) -> join ' ' line
 
 export sexpr-to-katex = (expr) ->
     | is-array expr
@@ -101,10 +104,15 @@ export sexpr-to-katex = (expr) ->
     | otherwise
         expr
 
-export format-sexpr = (expr) ->
+export sexpr-to-postfix = split-variadic >> (expr) ->
     | is-array expr
-        "(#{map format-sexpr, expr |> join ' '})"
+        [op, ...args] = expr
+        concat-map sexpr-to-postfix, args |> cons-last op
+    | otherwise
+        [expr]
+
+export sexpr-to-string = (expr) ->
+    | is-array expr
+        "(#{map sexpr-to-string, expr |> join ' '})"
     | otherwise
         expr
-
-export format-postfix = (line) -> join ' ' line
