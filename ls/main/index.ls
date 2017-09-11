@@ -1,8 +1,8 @@
 require! \prelude-ls : {concat, concat-map, fold, head, is-type, join, map, pairs-to-obj, reverse, split-at, tail}
 
-cons = (item, list) --> concat [[item], list]
-cons-last = (item, list) --> concat [list, [item]]
-is-array = is-type \Array
+#
+# Operator definitions
+#
 
 class Operator
     (name, arity, variadic, fixity, precedence) ->
@@ -23,6 +23,14 @@ ops =
         (defop \^,    2, false, \infix,  1),
         (defop \neg,  1, false, \prefix, 1),
         (defop \sqrt, 1, false, \prefix, 4)]
+
+#
+# General helpers
+#
+
+cons = (item, list) --> concat [[item], list]
+cons-last = (item, list) --> concat [list, [item]]
+is-array = is-type \Array
 
 #
 # Syntax manipulation helpers
