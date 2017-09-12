@@ -1,4 +1,16 @@
-require! \prelude-ls : {concat, concat-map, fold, head, is-type, join, map, pairs-to-obj, reverse, split-at, tail}
+require! \prelude-ls : {
+    concat,
+    concat-map,
+    fold,
+    head,
+    is-type,
+    join,
+    map,
+    pairs-to-obj,
+    reverse,
+    split-at,
+    tail
+}
 
 #
 # Operator definitions

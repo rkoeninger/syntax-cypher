@@ -1,5 +1,14 @@
-require! \assert : {deepEqual, equal}
-require! '../main/index' : {postfix-to-sexpr, postfix-to-string, sexpr-to-postfix, sexpr-to-string, sexpr-to-tex}
+require! \assert : {
+    deepEqual,
+    equal
+}
+require! '../main/index' : {
+    postfix-to-sexpr,
+    postfix-to-string,
+    sexpr-to-postfix,
+    sexpr-to-string,
+    sexpr-to-tex
+}
 
 describe 'postfix -> sexpr' ->
     specify 'should combine variadic applications' ->
