@@ -1,5 +1,5 @@
 require! \assert : {deepEqual, equal}
-require! '../main/index' : {postfix-to-sexpr, postfix-to-string, sexpr-to-katex, sexpr-to-postfix, sexpr-to-string}
+require! '../main/index' : {postfix-to-sexpr, postfix-to-string, sexpr-to-postfix, sexpr-to-string, sexpr-to-tex}
 
 describe 'postfix -> sexpr' ->
     specify 'should combine variadic applications' ->
@@ -11,13 +11,13 @@ describe 'postfix -> string' ->
         equal '1 2 3 + *', postfix-to-string [1 2 3 \+ \*]
         equal 'b 2 ^ 4 a c * * -', postfix-to-string [\b 2 \^ 4 \a \c \* \* \-]
 
-describe 'sexpr -> katex' ->
+describe 'sexpr -> tex' ->
     specify 'should handle variadic applications' ->
-        equal '{1 + 2 + 3 + 4}', sexpr-to-katex [\+ 1 2 3 4]
-        equal '{a b c}', sexpr-to-katex [\* \a \b \c]
+        equal '{1 + 2 + 3 + 4}', sexpr-to-tex [\+ 1 2 3 4]
+        equal '{a b c}', sexpr-to-tex [\* \a \b \c]
 
     specify 'should convert division to \\frac' ->
-        equal '{\\frac {2 a} b}', sexpr-to-katex [\/ [\* 2 \a] \b]
+        equal '{\\frac {2 a} b}', sexpr-to-tex [\/ [\* 2 \a] \b]
 
 describe 'sexpr -> postfix' ->
     specify 'should split variadic applications' ->

@@ -16,13 +16,14 @@ defop = (name, arity, variadic) -> [name, new Operator name, arity, variadic]
 
 ops =
     pairs-to-obj [
-        (defop \+,    2, true,  \infix,  3),
-        (defop \-,    2, false, \infix,  3),
-        (defop \*,    2, true,  \infix,  2),
-        (defop \/,    2, false, \infix,  2),
-        (defop \^,    2, false, \infix,  1),
-        (defop \neg,  1, false, \prefix, 1),
-        (defop \sqrt, 1, false, \prefix, 4)]
+        defop \+,    2, true,  \infix,  3
+        defop \-,    2, false, \infix,  3
+        defop \*,    2, true,  \infix,  2
+        defop \/,    2, false, \infix,  2
+        defop \^,    2, false, \infix,  1
+        defop \neg,  1, false, \prefix, 1
+        defop \sqrt, 1, false, \prefix, 4
+    ]
 
 #
 # General helpers
@@ -45,9 +46,12 @@ unvary-application = (op, arity, args) ->
         cons op, these |> cons-last nested
 
 vary-application = (op, arity, args) ->
-    is-op = (expr) -> is-array expr and op == head expr
-    lift = (expr) -> if is-op expr then vary-application op, arity, expr |> tail else [expr]
-    concat-map lift, args
+    combine = (expr) ->
+        if is-array expr and op == head expr then
+            vary-application op, arity, expr |> tail
+        else
+            [expr]
+    concat-map combine, args
 
 split-variadic = (expr) ->
     | is-array expr
@@ -87,19 +91,6 @@ export postfix-to-sexpr = (line) ->
 
 export postfix-to-string = (line) -> join ' ' line
 
-export sexpr-to-katex = (expr) ->
-    | is-array expr
-        [op, ...args] = expr
-        switch op
-        | \* => "{#{map sexpr-to-katex, args |> join ' '}}"
-        | \+ => "{#{map sexpr-to-katex, args |> join ' + '}}"
-        | \- \^ => "{#{sexpr-to-katex args[0]} #{op} #{sexpr-to-katex args[1]}}"
-        | \/ => "{\\frac #{sexpr-to-katex args[0]} #{sexpr-to-katex args[1]}}"
-        | \neg => "{- #{sexpr-to-katex args[0]}}"
-        | \sqrt => "{\\sqrt #{sexpr-to-katex args[0]}}"
-    | otherwise
-        expr
-
 export sexpr-to-postfix = combine-variadic >> split-variadic >> (expr) ->
     | is-array expr
         [op, ...args] = expr
@@ -110,5 +101,18 @@ export sexpr-to-postfix = combine-variadic >> split-variadic >> (expr) ->
 export sexpr-to-string = (expr) ->
     | is-array expr
         "(#{map sexpr-to-string, expr |> join ' '})"
+    | otherwise
+        expr
+
+export sexpr-to-tex = (expr) ->
+    | is-array expr
+        [op, ...args] = expr
+        switch op
+        | \* => "{#{map sexpr-to-tex, args |> join ' '}}"
+        | \+ => "{#{map sexpr-to-tex, args |> join ' + '}}"
+        | \- \^ => "{#{sexpr-to-tex args[0]} #{op} #{sexpr-to-tex args[1]}}"
+        | \/ => "{\\frac #{sexpr-to-tex args[0]} #{sexpr-to-tex args[1]}}"
+        | \neg => "{- #{sexpr-to-tex args[0]}}"
+        | \sqrt => "{\\sqrt #{sexpr-to-tex args[0]}}"
     | otherwise
         expr
