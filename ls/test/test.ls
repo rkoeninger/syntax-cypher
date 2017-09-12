@@ -2,7 +2,7 @@ require! \assert : {
     deepEqual,
     equal
 }
-require! '../main/index' : {
+require! '../main/cypher' : {
     postfix-to-sexpr,
     postfix-to-string,
     sexpr-to-postfix,

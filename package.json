@@ -2,15 +2,13 @@
   "name": "syntax-cypher",
   "version": "0.0.1",
   "description": "Reactive webpage that translates syntax forms",
-  "scripts": {
-    "test": "gulp test"
-  },
+  "author": "Robert Koeninger",
+  "license": "MIT",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/rkoeninger/syntax-cypher.git"
   },
-  "author": "Robert Koeninger",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/rkoeninger/syntax-cypher/issues"
   },
@@ -24,5 +22,11 @@
     "livescript": "^1.4.0",
     "mocha": "^3.5.0",
     "prelude-ls": "^1.1.2"
+  },
+  "dependencies": {
+    "vue": "^2.4.2"
+  },
+  "scripts": {
+    "test": "gulp test"
   }
 }
