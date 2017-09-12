@@ -46,9 +46,8 @@ unvary-application = (op, arity, args) ->
 
 vary-application = (op, arity, args) ->
     is-op = (expr) -> is-array expr and op == head expr
-    recur = (expr) -> if is-op expr then vary-application op, arity, expr else expr
-    lift = (expr) -> if is-op expr then tail expr else [expr]
-    map recur, args |> concat-map lift
+    lift = (expr) -> if is-op expr then vary-application op, arity, expr |> tail else [expr]
+    concat-map lift, args
 
 split-variadic = (expr) ->
     | is-array expr
