@@ -45,16 +45,9 @@ unvary-application = (op, arity, args) ->
         cons op, these |> cons-last nested
 
 vary-application = (op, arity, args) ->
-    recur = (expr) ->
-        | is-array expr and op == head expr
-            vary-application op, arity, expr
-        | otherwise
-            expr
-    lift = (expr) ->
-        | is-array expr and op == head expr
-            tail expr
-        | otherwise
-            [expr]
+    is-op = (expr) -> is-array expr and op == head expr
+    recur = (expr) -> if is-op expr then vary-application op, arity, expr else expr
+    lift = (expr) -> if is-op expr then tail expr else [expr]
     map recur, args |> concat-map lift
 
 split-variadic = (expr) ->
@@ -102,11 +95,7 @@ export sexpr-to-katex = (expr) ->
         | \* => "{#{map sexpr-to-katex, args |> join ' '}}"
         | \+ => "{#{map sexpr-to-katex, args |> join ' + '}}"
         | \- \^ => "{#{sexpr-to-katex args[0]} #{op} #{sexpr-to-katex args[1]}}"
-        | \/ =>
-            if is-array args[0] or is-array args[1] then
-                "{\\frac {#{sexpr-to-katex args[0]}}{#{sexpr-to-katex args[1]}}}"
-            else
-                "{#{sexpr-to-katex args[0]} / #{sexpr-to-katex args[1]}}"
+        | \/ => "{\\frac #{sexpr-to-katex args[0]} #{sexpr-to-katex args[1]}}"
         | \neg => "{- #{sexpr-to-katex args[0]}}"
         | \sqrt => "{\\sqrt #{sexpr-to-katex args[0]}}"
     | otherwise
