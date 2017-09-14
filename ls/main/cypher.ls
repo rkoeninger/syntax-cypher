@@ -122,14 +122,14 @@ class SexprParser
         else
             unparsed-literal
 
-    read-one: ->
-        @skip-while (ch) -> ch == /\s/
+    read-one: ~>
+        @skip-while (== /\s/)
 
-        if do @is-done then
+        if @is-done! then
             throw new Error "Unexpected end of expression"
 
         switch @current!
-        | \( => @skip-one!; unfold @read-one.bind(this)
+        | \( => @skip-one!; unfold @read-one
         | \) => @skip-one!; undefined
         | otherwise => @read-literal!
 

@@ -47,3 +47,6 @@ describe 'string -> postfix' ->
 describe 'string -> sexpr' ->
     specify 'should handle nested expressions' ->
         deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '(* (+ a 1) (- b 2))'
+
+    specify 'should handle arbitrary whitespace' ->
+        deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '   ( *   ( + a    1 ) (- b   2) )'
