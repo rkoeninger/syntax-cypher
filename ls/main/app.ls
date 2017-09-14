@@ -1,14 +1,16 @@
 require! \prelude-ls : {
-    map
+    chars,
+    reverse,
+    unchars
 }
-# require! 'cypher' : {
+# require! './cypher' : {
 #     postfix-to-sexpr
 # }
 
-reverseString = (s) -> s.split('').reverse('').join('')
+reverseString = chars >> reverse >> unchars
 
 init-vue = !->
-    new Vue {
+    new Vue do
         el: 'main'
         data:
             message1: 'hi'
@@ -21,6 +23,5 @@ init-vue = !->
         methods:
             convert1: !-> this.message2 = reverseString this.message1
             convert2: !-> this.message1 = reverseString this.message2
-    }
 
 setTimeout init-vue, 0

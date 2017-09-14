@@ -22,14 +22,9 @@ require! \prelude-ls : {
 #
 
 class Operator
-    (name, arity, variadic, fixity, precedence) ->
-        @name = name
-        @arity = arity
-        @variadic = variadic
-        @fixity = fixity
-        @precedence = precedence
+    (@name, @arity, @variadic, @fixity, @precedence) -> this
 
-defop = (name, arity, variadic) -> [name, new Operator name, arity, variadic]
+defop = (name) -> [name, new Operator ...]
 
 ops =
     pairs-to-obj [
@@ -51,12 +46,12 @@ cons-last = (item, list) --> concat [list, [item]]
 is-array = is-type \Array
 unfold = (f) ->
     build = (x) ->
-        y = do f
+        y = f!
         if y then [y, x] else null
     unfoldr build, 0
 
 #
-# S-Expression Variadic Application Helpers
+# Variadic Application Helpers
 #
 
 unvary-application = (op, arity, args) ->
@@ -108,13 +103,13 @@ class SexprParser
 
     is-done: -> @text.length <= @pos
 
-    current: -> if do @is-done then undefined else @text.charAt @pos
+    current: -> if @is-done! then undefined else @text.charAt @pos
 
     skip-one: !-> @pos++
 
     skip-while: (f) !->
-        while not do @is-done and f do @current
-            do @skip-one
+        while not @is-done! and f @current!
+            @skip-one!
 
     read-literal: ->
         start = @pos
@@ -129,12 +124,14 @@ class SexprParser
 
     read-one: ->
         @skip-while (ch) -> ch == /\s/
+
         if do @is-done then
             throw new Error "Unexpected end of expression"
-        switch (do @current)
-        | \( => do @skip-one; unfold @read-one.bind(this)
-        | \) => do @skip-one; undefined
-        | otherwise => do @read-literal
+
+        switch @current!
+        | \( => @skip-one!; unfold @read-one.bind(this)
+        | \) => @skip-one!; undefined
+        | otherwise => @read-literal!
 
 #
 # Exported Conversion Functions
@@ -180,4 +177,4 @@ export sexpr-to-tex = (expr) ->
 
 export string-to-postfix = words >> filter (== /^\S+$/)
 
-export string-to-sexpr = (s) -> do new SexprParser s .read-one
+export string-to-sexpr = (s) -> new SexprParser s .read-one!
