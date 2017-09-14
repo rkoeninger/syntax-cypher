@@ -122,14 +122,14 @@ class SexprParser
         else
             unparsed-literal
 
-    read-one: ~>
+    read: ~>
         @skip-while (== /\s/)
 
         if @is-done! then
             throw new Error "Unexpected end of expression"
 
         switch @current!
-        | \( => @skip-one!; unfold @read-one
+        | \( => @skip-one!; unfold @read
         | \) => @skip-one!; undefined
         | otherwise => @read-literal!
 
@@ -177,4 +177,4 @@ export sexpr-to-tex = (expr) ->
 
 export string-to-postfix = words >> filter (== /^\S+$/)
 
-export string-to-sexpr = (s) -> new SexprParser s .read-one!
+export string-to-sexpr = (s) -> new SexprParser s .read!
