@@ -7,7 +7,9 @@ require! '../main/cypher' : {
     postfix-to-string,
     sexpr-to-postfix,
     sexpr-to-string,
-    sexpr-to-tex
+    sexpr-to-tex,
+    string-to-postfix,
+    string-to-sexpr
 }
 
 describe 'postfix -> sexpr' ->
@@ -37,3 +39,11 @@ describe 'sexpr -> tex' ->
 
     specify 'should convert division to \\frac' ->
         equal '{\\frac {2 a} b}', sexpr-to-tex [\/ [\* 2 \a] \b]
+
+describe 'string -> postfix' ->
+    specify 'should handle arbitrary spacing' ->
+        deepEqual [\a \b \+], string-to-postfix '   a  b    +  '
+
+describe 'string -> sexpr' ->
+    specify 'should handle nested expressions' ->
+        deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '(* (+ a 1) (- b 2))'

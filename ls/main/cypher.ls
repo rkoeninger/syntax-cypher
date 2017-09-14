@@ -1,6 +1,7 @@
 require! \prelude-ls : {
     concat,
     concat-map,
+    filter,
     fold,
     head,
     is-type,
@@ -8,12 +9,16 @@ require! \prelude-ls : {
     map,
     pairs-to-obj,
     reverse,
+    slice,
     split-at,
-    tail
+    tail,
+    unfoldr,
+    unwords,
+    words
 }
 
 #
-# Operator definitions
+# Operator Definitions
 #
 
 class Operator
@@ -38,15 +43,20 @@ ops =
     ]
 
 #
-# General helpers
+# General Helpers
 #
 
 cons = (item, list) --> concat [[item], list]
 cons-last = (item, list) --> concat [list, [item]]
 is-array = is-type \Array
+unfold = (f) ->
+    build = (x) ->
+        y = do f
+        if y then [y, x] else null
+    unfoldr build, 0
 
 #
-# Syntax manipulation helpers
+# S-Expression Variadic Application Helpers
 #
 
 unvary-application = (op, arity, args) ->
@@ -88,7 +98,46 @@ combine-variadic = (expr) ->
         expr
 
 #
-# Exported conversion functions
+# S-Expression Parsing
+#
+
+class SexprParser
+    (text) ->
+        @pos = 0
+        @text = text
+
+    is-done: -> @text.length <= @pos
+
+    current: -> if do @is-done then undefined else @text.charAt @pos
+
+    skip-one: !-> @pos++
+
+    skip-while: (f) !->
+        while not do @is-done and f do @current
+            do @skip-one
+
+    read-literal: ->
+        start = @pos
+        @skip-while (ch) -> ch != \( && ch != \) && ch == /\S/
+        end = @pos
+        unparsed-literal = slice start, end, @text
+
+        if unparsed-literal == /^\x2D?\d/ then
+            parse-float unparsed-literal
+        else
+            unparsed-literal
+
+    read-one: ->
+        @skip-while (ch) -> ch == /\s/
+        if do @is-done then
+            throw new Error "Unexpected end of expression"
+        switch (do @current)
+        | \( => do @skip-one; unfold @read-one.bind(this)
+        | \) => do @skip-one; undefined
+        | otherwise => do @read-literal
+
+#
+# Exported Conversion Functions
 #
 
 export postfix-to-sexpr = (line) ->
@@ -101,7 +150,7 @@ export postfix-to-sexpr = (line) ->
             cons item, stack
     fold push-word, [], line |> head |> combine-variadic
 
-export postfix-to-string = (line) -> join ' ' line
+export postfix-to-string = unwords
 
 export sexpr-to-postfix = combine-variadic >> split-variadic >> (expr) ->
     | is-array expr
@@ -112,7 +161,7 @@ export sexpr-to-postfix = combine-variadic >> split-variadic >> (expr) ->
 
 export sexpr-to-string = (expr) ->
     | is-array expr
-        "(#{map sexpr-to-string, expr |> join ' '})"
+        "(#{map sexpr-to-string, expr |> unwords})"
     | otherwise
         expr
 
@@ -120,7 +169,7 @@ export sexpr-to-tex = (expr) ->
     | is-array expr
         [op, ...args] = expr
         switch op
-        | \* => "{#{map sexpr-to-tex, args |> join ' '}}"
+        | \* => "{#{map sexpr-to-tex, args |> unwords}}"
         | \+ => "{#{map sexpr-to-tex, args |> join ' + '}}"
         | \- \^ => "{#{sexpr-to-tex args[0]} #{op} #{sexpr-to-tex args[1]}}"
         | \/ => "{\\frac #{sexpr-to-tex args[0]} #{sexpr-to-tex args[1]}}"
@@ -128,3 +177,7 @@ export sexpr-to-tex = (expr) ->
         | \sqrt => "{\\sqrt #{sexpr-to-tex args[0]}}"
     | otherwise
         expr
+
+export string-to-postfix = words >> filter (== /^\S+$/)
+
+export string-to-sexpr = (s) -> do new SexprParser s .read-one
