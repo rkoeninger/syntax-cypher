@@ -24,7 +24,7 @@ require! \prelude-ls : {
 class Operator
     (@name, @arity, @variadic, @fixity, @precedence) -> this
 
-defop = (name) -> [name, new Operator ...]
+defop = -> [it, new Operator ...]
 
 ops =
     pairs-to-obj [
@@ -45,9 +45,9 @@ cons = (item, list) --> concat [[item], list]
 cons-last = (item, list) --> concat [list, [item]]
 is-array = is-type \Array
 unfold = (f) ->
-    build = (x) ->
+    build = ->
         y = f!
-        if y then [y, x] else null
+        if y then [y, it] else null
     unfoldr build, 0
 
 #
@@ -177,4 +177,4 @@ export sexpr-to-tex = (expr) ->
 
 export string-to-postfix = words >> filter (== /^\S+$/)
 
-export string-to-sexpr = (s) -> new SexprParser s .read!
+export string-to-sexpr = -> new SexprParser it .read!
