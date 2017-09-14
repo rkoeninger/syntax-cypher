@@ -50,3 +50,6 @@ describe 'string -> sexpr' ->
 
     specify 'should handle arbitrary whitespace' ->
         deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '   ( *   ( + a    1 ) (- b   2) )'
+
+    specify 'should read expressions that are falsy in javascript' ->
+        deepEqual [0], string-to-sexpr '(0)'

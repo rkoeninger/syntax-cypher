@@ -44,10 +44,11 @@ ops =
 cons = (item, list) --> concat [[item], list]
 cons-last = (item, list) --> concat [list, [item]]
 is-array = is-type \Array
+is-defined = -> not is-type \Undefined it
 unfold = (f) ->
     build = ->
         y = f!
-        if y then [y, it] else null
+        if is-defined y then [y, it]
     unfoldr build, 0
 
 #
