@@ -7,3 +7,6 @@ textarea {
 	font-size: 200%;
 	letter-spacing: 120%;
 }
+.editor, .display {
+	margin: 20sp;
+}

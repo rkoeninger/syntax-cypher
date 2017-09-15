@@ -33,12 +33,16 @@ init-vue = !->
         data:
             sexpr-code: '(+ a b)'
             postfix-code: 'a b +'
-            tex-code: '{a + b}'
+            tex-code: ''
         template: '
             <div>
-                <textarea class="editor postfix" v-model="postfixCode" v-on:keyup="postfixChanged"></textarea>
-                <textarea class="editor sexpr" v-model="sexprCode" v-on:keyup="sexprChanged"></textarea>
-                <span class="display tex" v-html="texCode"></span>
+                <div class="editor postfix">
+                    <textarea rows="5" columns="40" v-model="postfixCode" v-on:keyup="postfixChanged"></textarea>
+                </div>
+                <div class="editor sexpr">
+                    <textarea rows="5" columns="40" v-model="sexprCode" v-on:keyup="sexprChanged"></textarea>
+                </div>
+                <div class="display tex" v-html="texCode"></div>
             </div>'
         methods:
             postfix-changed: !-> update-from-postfix-code this
