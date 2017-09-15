@@ -3,9 +3,15 @@ require! \prelude-ls : {
     reverse,
     unchars
 }
-# require! './cypher' : {
-#     postfix-to-sexpr
-# }
+require! './cypher' : {
+    postfix-to-sexpr,
+    postfix-to-string,
+    sexpr-to-postfix,
+    sexpr-to-string,
+    sexpr-to-tex,
+    string-to-postfix,
+    string-to-sexpr,
+}
 
 reverseString = chars >> reverse >> unchars
 
@@ -13,15 +19,23 @@ init-vue = !->
     new Vue do
         el: 'main'
         data:
-            message1: 'hi'
-            message2: 'ih'
+            sexpr-code: '(+ a b)'
+            postfix-code: 'a b +'
+            tex-code: '{a + b}'
         template: '
             <div>
-                <input v-model="message1" v-on:keyup="convert1">
-                <input v-model="message2" v-on:keyup="convert2">
+                <textarea v-model="sexprCode" v-on:keyup="sexprChanged"></textarea>
+                <textarea v-model="postfixCode" v-on:keyup="postfixChanged"></textarea>
+                <span>{{ texCode }}</span>
             </div>'
         methods:
-            convert1: !-> this.message2 = reverseString this.message1
-            convert2: !-> this.message1 = reverseString this.message2
+            sexpr-changed: !->
+                sexpr = string-to-sexpr @sexpr-code
+                @postfix-code = postfix-to-string sexpr-to-postfix sexpr
+                @tex-code = sexpr-to-tex sexpr
+            postfix-changed: !->
+                sexpr = postfix-to-sexpr string-to-postfix @postfix-code
+                @sexpr-code = sexpr-to-string sexpr
+                @tex-code = sexpr-to-tex sexpr
 
 setTimeout init-vue, 0
