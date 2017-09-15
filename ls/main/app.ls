@@ -12,6 +12,8 @@ require! './cypher' : {
     string-to-postfix,
     string-to-sexpr,
 }
+require! \katex
+require! \vue
 
 reverseString = chars >> reverse >> unchars
 

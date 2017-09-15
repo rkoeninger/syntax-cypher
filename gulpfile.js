@@ -14,14 +14,15 @@ var del = require("del"),
     jsRoot = "./js",
     jsFiles = jsRoot + "/**/*.js",
     jsMainFiles = jsRoot + "/main/**/*.js",
-    jsTestFiles = jsRoot + "/test/**/*.js";
+    jsTestFiles = jsRoot + "/test/**/*.js",
+    distRoot = "./dist";
 
 task("build", () => src(lsFiles).pipe(lsc).pipe(dest(jsRoot)));
 
-task("clean", () => del([jsRoot]));
+task("bundle", ["build"], () => src(jsMainFiles).pipe(webpack).pipe(dest(distRoot)));
+
+task("clean", () => del([jsRoot, distRoot]));
 
 task("test", ["build"], () => src(jsTestFiles, {read: false}).pipe(mocha));
 
 task("watch", () => watch(lsFiles, ["test"]));
-
-task("webpack", ["build"], () => src(jsMainFiles).pipe(webpack).pipe(dest(jsRoot)));
