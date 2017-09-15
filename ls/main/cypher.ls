@@ -163,7 +163,7 @@ export sexpr-to-string = (expr) ->
     | otherwise
         expr
 
-export sexpr-to-tex = (expr) ->
+export sexpr-to-tex = combine-variadic >> (expr) ->
     | is-array expr
         [op, ...args] = expr
         switch op
