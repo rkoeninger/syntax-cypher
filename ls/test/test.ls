@@ -56,7 +56,7 @@ describe 'string -> sexpr' !->
         deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '(* (+ a 1) (- b 2))'
 
     specify 'should handle arbitrary whitespace' !->
-        deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '   ( *   ( + a    1 ) (- b   2) )'
+        deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '   ( *   ( + a    1 ) (- b   2) )   '
 
     specify 'should read expressions that are falsy in javascript' !->
         deepEqual [\+ 0 0], string-to-sexpr '(+ 0 0)'
@@ -67,6 +67,9 @@ describe 'string -> sexpr' !->
 
     specify 'should return undefined when application starts with non-operator' !->
         strictEqual undefined, string-to-sexpr '(1 2)'
+
+    specify 'should return undefined when additional non-space chars after complete expression' !->
+        strictEqual undefined, string-to-sexpr '(+ a b)  0  '
 
     specify 'should return undefined when application is empty' !->
         strictEqual undefined, string-to-sexpr '()'

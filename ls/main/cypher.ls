@@ -1,5 +1,7 @@
 require! \prelude-ls : {
     all,
+    any,
+    chars,
     concat,
     concat-map,
     filter,
@@ -105,6 +107,8 @@ class SexprParser
 
     is-done: -> @text.length <= @pos
 
+    has-remaining-input: -> slice @pos, @text.length, @text |> chars |> any (== /\S/)
+
     current: -> if @is-done! then undefined else @text.charAt @pos
 
     skip-one: !-> @pos++
@@ -199,7 +203,8 @@ export string-to-postfix = ->
 
 export string-to-sexpr = ->
     try
-        sexpr = new SexprParser it .read!
-        if validate-sexpr sexpr then sexpr
+        parser = new SexprParser it
+        sexpr = parser.read!
+        if validate-sexpr sexpr and not parser.has-remaining-input! then sexpr
     catch
         undefined
