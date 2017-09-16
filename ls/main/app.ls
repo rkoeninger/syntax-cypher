@@ -15,7 +15,7 @@ require! './cypher' : {
 require! \katex : {
     render-to-string
 }
-require! \vue
+# require! \vue # not working
 
 update-from-postfix-code = (data) !->
     sexpr = postfix-to-sexpr string-to-postfix data.postfix-code
