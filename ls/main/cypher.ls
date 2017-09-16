@@ -132,7 +132,7 @@ class SexprParser
         @skip-while (== /\s/)
 
         if @is-done! then
-            throw new Error "Unexpected end of expression"
+            throw new Error 'Unexpected end of expression'
 
         switch @current!
         | \( => @skip-one!; unfold @read
@@ -151,16 +151,23 @@ validate-sexpr = (expr) ->
 #
 
 eval-postfix = (line) ->
-    push-word = (stack, item) ->
-        | item of ops
-            {arity} = ops[item]
-            [args, stack] = split-at arity, stack
-            reverse args |> cons item |> cons _, stack
-        | otherwise
-            cons item, stack
-    fold push-word, [], line
+    try
+        push-word = (stack, item) ->
+            | item of ops
+                {arity} = ops[item]
+                if stack.length < arity then
+                    throw new Error 'Stack underflow'
+                [args, stack] = split-at arity, stack
+                reverse args |> cons item |> cons _, stack
+            | otherwise
+                cons item, stack
+        fold push-word, [], line
+    catch
+        undefined
 
-validate-postfix = eval-postfix >> (.length) >> (== 1)
+validate-postfix = (line) ->
+    if eval-postfix line then
+        that.length == 1
 
 #
 # Exported Conversion Functions

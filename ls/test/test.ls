@@ -48,6 +48,9 @@ describe 'string -> postfix' !->
     specify 'should return undefined when line doesnt eval to single value' !->
         strictEqual undefined, string-to-postfix '1 2 3 +'
 
+    specify 'should return undefined on stack underflow' !->
+        strictEqual undefined, string-to-postfix '1 +'
+
     specify 'should return undefined when input is blank' !->
         strictEqual undefined, string-to-postfix ''
 
