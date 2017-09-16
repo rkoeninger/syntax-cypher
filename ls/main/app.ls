@@ -28,12 +28,14 @@ update-from-postfix-error = !->
     it.sexpr-disabled = true
     it.postfix-error = true
     it.sexpr-error = false
+    it.text-code = null
 
 update-from-sexpr-error = !->
     it.postfix-disabled = true
     it.sexpr-disabled = false
     it.postfix-error = false
     it.sexpr-error = true
+    it.text-code = null
 
 update-from-postfix-code = !->
     if string-to-postfix it.postfix-code then
@@ -65,13 +67,18 @@ init-vue = !->
             tex-code: ''
         template: '
             <div>
-                <div class="editor postfix">
+                <div class="box editor postfix">
+                    <p class="subtitle is-6">Reverse Polish</p>
                     <textarea v-bind:disabled="postfixDisabled" v-bind:class="{ \'is-danger\': postfixError }" class="textarea" type="text" rows="1" columns="80" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="postfixCode" v-on:keyup="postfixChanged"></textarea>
                 </div>
-                <div class="editor sexpr">
+                <div class="box editor sexpr">
+                    <p class="subtitle is-6">S-Expressions</p>
                     <textarea v-bind:disabled="sexprDisabled" v-bind:class="{ \'is-danger\': sexprError }" class="textarea" type="text" rows="1" columns="80" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="sexprCode" v-on:keyup="sexprChanged"></textarea>
                 </div>
-                <div class="display tex" v-html="texCode"></div>
+                <div class="box">
+                    <p class="subtitle is-6">Mathematical Notation</p>
+                    <div class="display tex" v-html="texCode"></div>
+                </div>
             </div>'
         methods:
             postfix-changed: !-> update-from-postfix-code this
