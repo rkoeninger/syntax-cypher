@@ -30,6 +30,7 @@ update-from-postfix-error = !->
     it.tex-disabled = true
     it.postfix-error = true
     it.sexpr-error = false
+    it.tex-code = ''
 
 update-from-sexpr-error = !->
     it.postfix-disabled = true
@@ -37,6 +38,7 @@ update-from-sexpr-error = !->
     it.tex-disabled = true
     it.postfix-error = false
     it.sexpr-error = true
+    it.tex-code = ''
 
 update-from-postfix-code = !->
     if string-to-postfix it.postfix-code then
