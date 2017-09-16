@@ -17,30 +17,59 @@ require! \katex : {
 }
 # require! \vue # not working
 
-update-from-postfix-code = (data) !->
-    sexpr = postfix-to-sexpr string-to-postfix data.postfix-code
-    data.sexpr-code = sexpr-to-string sexpr
-    data.tex-code = render-to-string sexpr-to-tex sexpr
+update-from-valid-code = !->
+    it.postfix-disabled = false
+    it.sexpr-disabled = false
+    it.postfix-error = false
+    it.sexpr-error = false
 
-update-from-sexpr-code = (data) !->
-    sexpr = string-to-sexpr data.sexpr-code
-    data.postfix-code = postfix-to-string sexpr-to-postfix sexpr
-    data.tex-code = render-to-string sexpr-to-tex sexpr
+update-from-postfix-error = !->
+    it.postfix-disabled = false
+    it.sexpr-disabled = true
+    it.postfix-error = true
+    it.sexpr-error = false
+
+update-from-sexpr-error = !->
+    it.postfix-disabled = true
+    it.sexpr-disabled = false
+    it.postfix-error = false
+    it.sexpr-error = true
+
+update-from-postfix-code = !->
+    if string-to-postfix it.postfix-code then
+        sexpr = postfix-to-sexpr that
+        it.sexpr-code = sexpr-to-string sexpr
+        it.tex-code = render-to-string sexpr-to-tex sexpr
+        update-from-valid-code it
+    else
+        update-from-postfix-error it
+
+update-from-sexpr-code = !->
+    if string-to-sexpr it.sexpr-code then
+        it.postfix-code = postfix-to-string sexpr-to-postfix that
+        it.tex-code = render-to-string sexpr-to-tex that
+        update-from-valid-code it
+    else
+        update-from-sexpr-error it
 
 init-vue = !->
     new Vue do
         el: 'main'
         data:
             sexpr-code: '(+ a b)'
+            sexpr-disabled: false
+            sexpr-error: false
             postfix-code: 'a b +'
+            postfix-disabled: false
+            postfix-error: false
             tex-code: ''
         template: '
             <div>
                 <div class="editor postfix">
-                    <textarea type="text" rows="1" columns="80" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="postfixCode" v-on:keyup="postfixChanged"></textarea>
+                    <textarea v-bind:disabled="postfixDisabled" v-bind:class="{ \'is-danger\': postfixError }" class="textarea" type="text" rows="1" columns="80" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="postfixCode" v-on:keyup="postfixChanged"></textarea>
                 </div>
                 <div class="editor sexpr">
-                    <textarea type="text" rows="1" columns="80" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="sexprCode" v-on:keyup="sexprChanged"></textarea>
+                    <textarea v-bind:disabled="sexprDisabled" v-bind:class="{ \'is-danger\': sexprError }" class="textarea" type="text" rows="1" columns="80" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="sexprCode" v-on:keyup="sexprChanged"></textarea>
                 </div>
                 <div class="display tex" v-html="texCode"></div>
             </div>'

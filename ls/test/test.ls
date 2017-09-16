@@ -1,6 +1,7 @@
 require! \assert : {
     deepEqual,
-    equal
+    equal,
+    strictEqual
 }
 require! '../main/cypher' : {
     postfix-to-sexpr,
@@ -44,6 +45,9 @@ describe 'string -> postfix' ->
     specify 'should handle arbitrary spacing' ->
         deepEqual [\a \b \+], string-to-postfix '   a  b    +  '
 
+    specify 'should return undefined when line doesnt eval to single value' ->
+        strictEqual undefined, string-to-postfix '1 2 3 +'
+
 describe 'string -> sexpr' ->
     specify 'should handle nested expressions' ->
         deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '(* (+ a 1) (- b 2))'
@@ -52,4 +56,14 @@ describe 'string -> sexpr' ->
         deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '   ( *   ( + a    1 ) (- b   2) )'
 
     specify 'should read expressions that are falsy in javascript' ->
-        deepEqual [0], string-to-sexpr '(0)'
+        deepEqual [\+ 0 0], string-to-sexpr '(+ 0 0)'
+
+    specify 'should return undefined when parens unmatched' ->
+        strictEqual undefined, string-to-sexpr '(+ 1 2'
+        strictEqual undefined, string-to-sexpr '(+ 1 () 2'
+
+    specify 'should return undefined when application starts with non-operator' ->
+        strictEqual undefined, string-to-sexpr '(1 2)'
+
+    specify 'should return undefined when application is empty' ->
+        strictEqual undefined, string-to-sexpr '()'

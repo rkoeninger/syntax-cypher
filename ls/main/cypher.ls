@@ -1,4 +1,5 @@
 require! \prelude-ls : {
+    all,
     concat,
     concat-map,
     filter,
@@ -134,11 +135,18 @@ class SexprParser
         | \) => @skip-one!; undefined
         | otherwise => @read-literal!
 
+validate-sexpr = (expr) ->
+    if is-array expr then
+        [op, ...args] = expr
+        op of ops and all validate-sexpr, args
+    else
+        true
+
 #
-# Exported Conversion Functions
+# Postfix Validation
 #
 
-export postfix-to-sexpr = (line) ->
+eval-postfix = (line) ->
     push-word = (stack, item) ->
         | item of ops
             {arity} = ops[item]
@@ -146,7 +154,15 @@ export postfix-to-sexpr = (line) ->
             reverse args |> cons item |> cons _, stack
         | otherwise
             cons item, stack
-    fold push-word, [], line |> head |> combine-variadic
+    fold push-word, [], line
+
+validate-postfix = eval-postfix >> (.length) >> (== 1)
+
+#
+# Exported Conversion Functions
+#
+
+export postfix-to-sexpr = eval-postfix >> head >> combine-variadic
 
 export postfix-to-string = unwords
 
@@ -176,6 +192,14 @@ export sexpr-to-tex = combine-variadic >> (expr) ->
     | otherwise
         expr
 
-export string-to-postfix = words >> filter (== /^\S+$/)
+export string-to-postfix = ->
+    postfix = words it |> filter (== /^\S+$/)
+    if postfix and validate-postfix postfix then
+        postfix
 
-export string-to-sexpr = -> new SexprParser it .read!
+export string-to-sexpr = ->
+    try
+        sexpr = new SexprParser it .read!
+        if validate-sexpr sexpr then sexpr
+    catch
+        undefined
