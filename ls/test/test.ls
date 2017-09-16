@@ -13,57 +13,63 @@ require! '../main/cypher' : {
     string-to-sexpr
 }
 
-describe 'postfix -> sexpr' ->
-    specify 'should combine variadic applications' ->
+describe 'postfix -> sexpr' !->
+    specify 'should combine variadic applications' !->
         deepEqual [\+ 1 2 3 4], postfix-to-sexpr [1 2 3 4 \+ \+ \+]
         deepEqual [\+ 1 2 3 4], postfix-to-sexpr [1 2 \+ 3 \+ 4 \+]
 
-describe 'postfix -> string' ->
-    specify 'should provide consistent spacing' ->
+describe 'postfix -> string' !->
+    specify 'should provide consistent spacing' !->
         equal '1 2 3 + *', postfix-to-string [1 2 3 \+ \*]
         equal 'b 2 ^ 4 a c * * -', postfix-to-string [\b 2 \^ 4 \a \c \* \* \-]
 
-describe 'sexpr -> postfix' ->
-    specify 'should split variadic applications' ->
+describe 'sexpr -> postfix' !->
+    specify 'should split variadic applications' !->
         deepEqual [1 2 3 4 \+ \+ \+], sexpr-to-postfix [\+ 1 2 3 4]
         deepEqual [1 2 3 4 \+ \+ \+], sexpr-to-postfix [\+ [\+ 1 2] [\+ 3 4]]
 
-describe 'sexpr -> string' ->
-    specify 'should provide consistent spacing' ->
+describe 'sexpr -> string' !->
+    specify 'should provide consistent spacing' !->
         equal '(+ 1 2 (* 3 4) 5)', sexpr-to-string [\+ 1 2 [\* 3 4] 5]
         equal '(- (^ b 2) (* 4 a c))', sexpr-to-string [\- [\^ \b 2] [\* 4 \a \c]]
 
-describe 'sexpr -> tex' ->
-    specify 'should handle variadic applications' ->
+describe 'sexpr -> tex' !->
+    specify 'should handle variadic applications' !->
         equal '{1 + 2 + 3 + 4}', sexpr-to-tex [\+ 1 2 3 4]
         equal '{a b c}', sexpr-to-tex [\* \a \b \c]
 
-    specify 'should convert division to \\frac' ->
+    specify 'should convert division to \\frac' !->
         equal '{\\frac {2 a} b}', sexpr-to-tex [\/ [\* 2 \a] \b]
 
-describe 'string -> postfix' ->
-    specify 'should handle arbitrary spacing' ->
+describe 'string -> postfix' !->
+    specify 'should handle arbitrary spacing' !->
         deepEqual [\a \b \+], string-to-postfix '   a  b    +  '
 
-    specify 'should return undefined when line doesnt eval to single value' ->
+    specify 'should return undefined when line doesnt eval to single value' !->
         strictEqual undefined, string-to-postfix '1 2 3 +'
 
-describe 'string -> sexpr' ->
-    specify 'should handle nested expressions' ->
+    specify 'should return undefined when input is blank' !->
+        strictEqual undefined, string-to-postfix ''
+
+describe 'string -> sexpr' !->
+    specify 'should handle nested expressions' !->
         deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '(* (+ a 1) (- b 2))'
 
-    specify 'should handle arbitrary whitespace' ->
+    specify 'should handle arbitrary whitespace' !->
         deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '   ( *   ( + a    1 ) (- b   2) )'
 
-    specify 'should read expressions that are falsy in javascript' ->
+    specify 'should read expressions that are falsy in javascript' !->
         deepEqual [\+ 0 0], string-to-sexpr '(+ 0 0)'
 
-    specify 'should return undefined when parens unmatched' ->
+    specify 'should return undefined when parens unmatched' !->
         strictEqual undefined, string-to-sexpr '(+ 1 2'
         strictEqual undefined, string-to-sexpr '(+ 1 () 2'
 
-    specify 'should return undefined when application starts with non-operator' ->
+    specify 'should return undefined when application starts with non-operator' !->
         strictEqual undefined, string-to-sexpr '(1 2)'
 
-    specify 'should return undefined when application is empty' ->
+    specify 'should return undefined when application is empty' !->
         strictEqual undefined, string-to-sexpr '()'
+
+    specify 'should return undefined when input is blank' !->
+        strictEqual undefined, string-to-sexpr ''
