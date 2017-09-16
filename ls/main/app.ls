@@ -37,10 +37,10 @@ init-vue = !->
         template: '
             <div>
                 <div class="editor postfix">
-                    <textarea rows="5" columns="40" v-model="postfixCode" v-on:keyup="postfixChanged"></textarea>
+                    <textarea rows="1" columns="80" v-model="postfixCode" v-on:keyup="postfixChanged"></textarea>
                 </div>
                 <div class="editor sexpr">
-                    <textarea rows="5" columns="40" v-model="sexprCode" v-on:keyup="sexprChanged"></textarea>
+                    <textarea rows="1" columns="80" v-model="sexprCode" v-on:keyup="sexprChanged"></textarea>
                 </div>
                 <div class="display tex" v-html="texCode"></div>
             </div>'

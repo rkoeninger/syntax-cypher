@@ -1,12 +1,13 @@
 textarea {
-	width: 400sp;
-	height: 300sp;
-	font-size: 125%;
+    width: 50em;
+    height: 2em;
+    font-size: 125%;
+    padding: 0.2em;
 }
 .tex {
-	font-size: 200%;
-	letter-spacing: 120%;
+    font-size: 125%;
+    letter-spacing: 120%;
 }
 .editor, .display {
-	margin: 20sp;
+    margin: 1em;
 }
