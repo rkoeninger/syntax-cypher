@@ -1,11 +1,12 @@
 textarea {
     width: 50em;
     height: 2em;
+    padding: 0.3em;
+    font-family: "Source Code Pro", "Monaco", "Inconsolata", monospace;
     font-size: 125%;
-    padding: 0.2em;
 }
 .tex {
-    font-size: 125%;
+    font-size: 135%;
     letter-spacing: 120%;
 }
 .editor, .display {
