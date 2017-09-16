@@ -20,22 +20,23 @@ require! \katex : {
 update-from-valid-code = !->
     it.postfix-disabled = false
     it.sexpr-disabled = false
+    it.tex-disabled = false
     it.postfix-error = false
     it.sexpr-error = false
 
 update-from-postfix-error = !->
     it.postfix-disabled = false
     it.sexpr-disabled = true
+    it.tex-disabled = true
     it.postfix-error = true
     it.sexpr-error = false
-    it.text-code = null
 
 update-from-sexpr-error = !->
     it.postfix-disabled = true
     it.sexpr-disabled = false
+    it.tex-disabled = true
     it.postfix-error = false
     it.sexpr-error = true
-    it.text-code = null
 
 update-from-postfix-code = !->
     if string-to-postfix it.postfix-code then
@@ -65,6 +66,7 @@ init-vue = !->
             postfix-disabled: false
             postfix-error: false
             tex-code: ''
+            tex-disabled: false
         template: '
             <div>
                 <div class="box editor postfix">
@@ -77,7 +79,7 @@ init-vue = !->
                 </div>
                 <div class="box">
                     <p class="subtitle is-6">Mathematical Notation</p>
-                    <div class="display tex" v-html="texCode"></div>
+                    <div v-bind:disabled="texDisabled" class="display tex" v-html="texCode"></div>
                 </div>
             </div>'
         methods:
