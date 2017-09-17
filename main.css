@@ -1,3 +1,6 @@
+.box {
+    margin: 1em;
+}
 textarea.textarea {
     resize: none;
     width: 50em;
@@ -6,10 +9,7 @@ textarea.textarea {
     font-family: "Source Code Pro", "Monaco", "Inconsolata", monospace;
     font-size: 125%;
 }
-.tex {
+.math {
     font-size: 135%;
     letter-spacing: 120%;
-}
-.box {
-    margin: 1em;
 }
