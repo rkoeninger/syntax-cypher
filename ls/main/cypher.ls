@@ -204,7 +204,7 @@ export sexpr-to-tex = (expr, context = 0) ->
             | \neg => "{- #{recur args[0]}}"
             | \sqrt => "{\\sqrt #{recur args[0]}}"
         if precedence < context then
-            "\\left( #{tex} \\right)"
+            "{\\left( #{tex} \\right)}"
         else
             tex
     | otherwise

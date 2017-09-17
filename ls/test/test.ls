@@ -42,7 +42,7 @@ describe 'sexpr -> tex' !->
         equal '{\\frac {2 a} b}', sexpr-to-tex [\/ [\* 2 \a] \b]
 
     specify 'should add parens when nested op of lower precendence' !->
-        equal '{a \\left( {b + c} \\right)}', sexpr-to-tex [\* \a [\+ \b \c]]
+        equal '{a {\\left( {b + c} \\right)}}', sexpr-to-tex [\* \a [\+ \b \c]]
 
 describe 'string -> postfix' !->
     specify 'should handle arbitrary spacing' !->
