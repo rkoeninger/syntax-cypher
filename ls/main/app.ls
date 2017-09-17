@@ -72,11 +72,11 @@ init-vue = !->
         template: '
             <div>
                 <div class="box editor postfix">
-                    <p class="subtitle is-6">Reverse Polish</p>
+                    <p class="subtitle is-6">Reverse Polish Notation</p>
                     <textarea v-bind:disabled="postfixDisabled" v-bind:class="{ \'is-danger\': postfixError }" class="textarea" type="text" rows="1" columns="80" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="postfixCode" v-on:keyup="postfixChanged"></textarea>
                 </div>
                 <div class="box editor sexpr">
-                    <p class="subtitle is-6">S-Expressions</p>
+                    <p class="subtitle is-6">Symbolic Expressions</p>
                     <textarea v-bind:disabled="sexprDisabled" v-bind:class="{ \'is-danger\': sexprError }" class="textarea" type="text" rows="1" columns="80" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="sexprCode" v-on:keyup="sexprChanged"></textarea>
                 </div>
                 <div class="box">

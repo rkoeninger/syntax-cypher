@@ -31,13 +31,13 @@ defop = -> [it, new Operator ...]
 
 ops =
     pairs-to-obj [
-        defop \+,    2, true,  \infix,  3
-        defop \-,    2, false, \infix,  3
-        defop \*,    2, true,  \infix,  2
-        defop \/,    2, false, \infix,  2
-        defop \^,    2, false, \infix,  1
-        defop \neg,  1, false, \prefix, 1
-        defop \sqrt, 1, false, \prefix, 4
+        defop \+,    2, true,  \infix,  2
+        defop \-,    2, false, \infix,  2
+        defop \*,    2, true,  \infix,  3
+        defop \/,    2, false, \infix,  3
+        defop \^,    2, false, \infix,  4
+        defop \neg,  1, false, \prefix, 4
+        defop \sqrt, 1, false, \prefix, 1
     ]
 
 #
@@ -190,16 +190,23 @@ export sexpr-to-string = (expr) ->
     | otherwise
         expr
 
-export sexpr-to-tex = combine-variadic >> (expr) ->
+export sexpr-to-tex = (expr, context = 0) ->
     | is-array expr
-        [op, ...args] = expr
-        switch op
-        | \* => "{#{map sexpr-to-tex, args |> unwords}}"
-        | \+ => "{#{map sexpr-to-tex, args |> join ' + '}}"
-        | \- \^ => "{#{sexpr-to-tex args[0]} #{op} #{sexpr-to-tex args[1]}}"
-        | \/ => "{\\frac #{sexpr-to-tex args[0]} #{sexpr-to-tex args[1]}}"
-        | \neg => "{- #{sexpr-to-tex args[0]}}"
-        | \sqrt => "{\\sqrt #{sexpr-to-tex args[0]}}"
+        [op, ...args] = combine-variadic expr
+        {precedence} = ops[op]
+        recur = (expr) -> sexpr-to-tex expr, precedence
+        tex =
+            switch op
+            | \* => "{#{map recur, args |> unwords}}"
+            | \+ => "{#{map recur, args |> join ' + '}}"
+            | \- \^ => "{#{recur args[0]} #{op} #{recur args[1]}}"
+            | \/ => "{\\frac #{recur args[0]} #{recur args[1]}}"
+            | \neg => "{- #{recur args[0]}}"
+            | \sqrt => "{\\sqrt #{recur args[0]}}"
+        if precedence < context then
+            "\\left( #{tex} \\right)"
+        else
+            tex
     | otherwise
         expr
 

@@ -41,6 +41,9 @@ describe 'sexpr -> tex' !->
     specify 'should convert division to \\frac' !->
         equal '{\\frac {2 a} b}', sexpr-to-tex [\/ [\* 2 \a] \b]
 
+    specify 'should add parens when nested op of lower precendence' !->
+        equal '{a \\left( {b + c} \\right)}', sexpr-to-tex [\* \a [\+ \b \c]]
+
 describe 'string -> postfix' !->
     specify 'should handle arbitrary spacing' !->
         deepEqual [\a \b \+], string-to-postfix '   a  b    +  '
