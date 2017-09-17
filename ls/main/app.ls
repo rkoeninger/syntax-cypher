@@ -67,7 +67,7 @@ init-vue = !->
             postfix-code: 'a b +'
             postfix-disabled: false
             postfix-error: false
-            tex-code: ''
+            tex-code: render-to-string 'a + b'
             tex-disabled: false
         template: '
             <div>
