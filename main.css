@@ -9,6 +9,9 @@ textarea.textarea {
     font-family: "Source Code Pro", "Monaco", "Inconsolata", monospace;
     font-size: 125%;
 }
+textarea[readonly] {
+    border: none !important;
+}
 .math {
     font-size: 135%;
     letter-spacing: 120%;
