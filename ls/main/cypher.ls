@@ -34,10 +34,10 @@ ops =
         defop \+,    2, true,  \infix,  2
         defop \-,    2, false, \infix,  2
         defop \*,    2, true,  \infix,  3
-        defop \/,    2, false, \infix,  3
+        defop \/,    2, false, \infix,  null
         defop \^,    2, false, \infix,  4
         defop \neg,  1, false, \prefix, 4
-        defop \sqrt, 1, false, \prefix, 1
+        defop \sqrt, 1, false, \prefix, null
     ]
 
 #
@@ -190,7 +190,7 @@ export sexpr-to-string = (expr) ->
     | otherwise
         expr
 
-export sexpr-to-tex = (expr, context = 0) ->
+export sexpr-to-tex = (expr, context = null) ->
     | is-array expr
         [op, ...args] = combine-variadic expr
         {precedence} = ops[op]
@@ -203,7 +203,7 @@ export sexpr-to-tex = (expr, context = 0) ->
             | \/ => "{\\frac #{recur args[0]} #{recur args[1]}}"
             | \neg => "{- #{recur args[0]}}"
             | \sqrt => "{\\sqrt #{recur args[0]}}"
-        if precedence < context then
+        if precedence and context and precedence < context then
             "{\\left( #{tex} \\right)}"
         else
             tex
