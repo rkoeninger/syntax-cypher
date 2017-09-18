@@ -36,6 +36,7 @@ ops =
         defop \*,    2, true,  \infix,  3
         defop \/,    2, false, \infix,  null
         defop \^,    2, false, \infix,  4
+        defop \+/-,  2, false, \infix,  2
         defop \neg,  1, false, \prefix, 4
         defop \sqrt, 1, false, \prefix, null
     ]
@@ -202,6 +203,7 @@ export sexpr-to-tex = (expr, context = null) ->
             | \+ => "{#{map recur, args |> join ' + '}}"
             | \- \^ => "{#{recur args[0]} #{op} #{recur args[1]}}"
             | \/ => "{\\frac #{recur args[0]} #{recur args[1]}}"
+            | \+/- => "{#{recur args[0]} \\pm #{recur args[1]}}"
             | \neg => "{- #{recur args[0]}}"
             | \sqrt => "{\\sqrt #{recur args[0]}}"
         if precedence and context and precedence < context then
