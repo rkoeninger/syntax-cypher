@@ -68,15 +68,15 @@ init-vue = !->
     new Vue do
         el: 'main'
         data:
-            sexpr-code: '(+ a b)'
-            sexpr-disabled: false
-            sexpr-error: false
-            postfix-code: 'a b +'
+            postfix-code: 'b neg b 2 ^ 4 a c * * - sqrt +/- 2 a * /'
             postfix-disabled: false
             postfix-error: false
-            tex-code: '{a + b}'
+            sexpr-code: '(/ (+/- (neg b) (sqrt (- (^ b 2) (* 4 a c)))) (* 2 a))'
+            sexpr-disabled: false
+            sexpr-error: false
+            tex-code: '{\\frac {{- b} \\pm {\\sqrt {{b ^ 2} - {4 a c}}}} {2 a}}'
             tex-disabled: false
-            math-html: render-to-string '{a + b}'
+            math-html: render-to-string '{\\frac {{- b} \\pm {\\sqrt {{b ^ 2} - {4 a c}}}} {2 a}}'
             math-disabled: false
         template: '
             <div>
@@ -91,9 +91,6 @@ init-vue = !->
                 <div class="box">
                     <p class="subtitle is-6"><span style="font-family: \'CMU Serif\', cmr10, LMRoman10-Regular, \'Nimbus Roman No9 L\', \'Times New Roman\', Times, serif;">T<span style="vertical-align: -0.5ex; margin-left: -0.1667em; margin-right: -0.125em;">E</span>X</span><p>
                     <textarea v-bind:disabled="texDisabled" v-model="texCode" readonly class="textarea" type="text" rows="1" columns="80" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
-                </div>
-                <div class="box">
-                    <p class="subtitle is-6">Mathematical Notation</p>
                     <div v-bind:disabled="mathDisabled" class="math" v-html="mathHtml"></div>
                 </div>
             </div>'

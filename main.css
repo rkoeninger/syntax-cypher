@@ -13,6 +13,7 @@ textarea[readonly] {
     border: none !important;
 }
 .math {
+    margin: 1em auto;
     font-size: 135%;
     letter-spacing: 120%;
 }
