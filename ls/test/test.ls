@@ -1,7 +1,7 @@
 require! \assert : {
-    deepEqual,
+    deep-equal,
     equal,
-    strictEqual
+    strict-equal
 }
 require! '../main/cypher' : {
     postfix-to-sexpr,
@@ -15,8 +15,8 @@ require! '../main/cypher' : {
 
 describe 'postfix -> sexpr' !->
     specify 'should combine variadic applications' !->
-        deepEqual [\+ 1 2 3 4], postfix-to-sexpr [1 2 3 4 \+ \+ \+]
-        deepEqual [\+ 1 2 3 4], postfix-to-sexpr [1 2 \+ 3 \+ 4 \+]
+        deep-equal [\+ 1 2 3 4], postfix-to-sexpr [1 2 3 4 \+ \+ \+]
+        deep-equal [\+ 1 2 3 4], postfix-to-sexpr [1 2 \+ 3 \+ 4 \+]
 
 describe 'postfix -> string' !->
     specify 'should provide consistent spacing' !->
@@ -25,8 +25,8 @@ describe 'postfix -> string' !->
 
 describe 'sexpr -> postfix' !->
     specify 'should split variadic applications' !->
-        deepEqual [1 2 3 4 \+ \+ \+], sexpr-to-postfix [\+ 1 2 3 4]
-        deepEqual [1 2 3 4 \+ \+ \+], sexpr-to-postfix [\+ [\+ 1 2] [\+ 3 4]]
+        deep-equal [1 2 3 4 \+ \+ \+], sexpr-to-postfix [\+ 1 2 3 4]
+        deep-equal [1 2 3 4 \+ \+ \+], sexpr-to-postfix [\+ [\+ 1 2] [\+ 3 4]]
 
 describe 'sexpr -> string' !->
     specify 'should provide consistent spacing' !->
@@ -46,39 +46,46 @@ describe 'sexpr -> tex' !->
 
 describe 'string -> postfix' !->
     specify 'should handle arbitrary spacing' !->
-        deepEqual [\a \b \+], string-to-postfix '   a  b    +  '
+        deep-equal [\a \b \+], string-to-postfix '   a  b    +  '
 
     specify 'should return undefined when line doesnt eval to single value' !->
-        strictEqual undefined, string-to-postfix '1 2 3 +'
+        strict-equal undefined, string-to-postfix '1 2 3 +'
 
     specify 'should return undefined on stack underflow' !->
-        strictEqual undefined, string-to-postfix '1 +'
+        strict-equal undefined, string-to-postfix '1 +'
 
     specify 'should return undefined when input is blank' !->
-        strictEqual undefined, string-to-postfix ''
+        strict-equal undefined, string-to-postfix ''
 
 describe 'string -> sexpr' !->
     specify 'should handle nested expressions' !->
-        deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '(* (+ a 1) (- b 2))'
+        deep-equal [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '(* (+ a 1) (- b 2))'
 
     specify 'should handle arbitrary whitespace' !->
-        deepEqual [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '   ( *   ( + a    1 ) (- b   2) )   '
+        deep-equal [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '   ( *   ( + a    1 ) (- b   2) )   '
 
     specify 'should read expressions that are falsy in javascript' !->
-        deepEqual [\+ 0 0], string-to-sexpr '(+ 0 0)'
+        deep-equal [\+ 0 0], string-to-sexpr '(+ 0 0)'
 
     specify 'should return undefined when parens unmatched' !->
-        strictEqual undefined, string-to-sexpr '(+ 1 2'
-        strictEqual undefined, string-to-sexpr '(+ 1 () 2'
+        strict-equal undefined, string-to-sexpr '(+ 1 2'
+        strict-equal undefined, string-to-sexpr '(+ 1 () 2'
 
     specify 'should return undefined when application starts with non-operator' !->
-        strictEqual undefined, string-to-sexpr '(1 2)'
+        strict-equal undefined, string-to-sexpr '(1 2)'
+
+    specify 'should return undefined when application starts with unknown operator' !->
+        strict-equal undefined, string-to-sexpr '($ 1 2)'
+
+    specify 'should return undefined when argument count does not fit arity/variadicity' !->
+        strict-equal undefined, string-to-sexpr '(+ 1)'
+        strict-equal undefined, string-to-sexpr '(- 1 2 3)'
 
     specify 'should return undefined when additional non-space chars after complete expression' !->
-        strictEqual undefined, string-to-sexpr '(+ a b)  0  '
+        strict-equal undefined, string-to-sexpr '(+ a b)  0  '
 
     specify 'should return undefined when application is empty' !->
-        strictEqual undefined, string-to-sexpr '()'
+        strict-equal undefined, string-to-sexpr '()'
 
     specify 'should return undefined when input is blank' !->
-        strictEqual undefined, string-to-sexpr ''
+        strict-equal undefined, string-to-sexpr ''

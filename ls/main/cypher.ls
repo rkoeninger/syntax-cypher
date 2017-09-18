@@ -140,11 +140,12 @@ class SexprParser
         | otherwise => @read-literal!
 
 validate-sexpr = (expr) ->
-    if is-array expr then
-        [op, ...args] = expr
-        op of ops and all validate-sexpr, args
-    else
-        true
+    if not is-array expr then return true
+    [op, ...args] = expr
+    if not op of ops then return false
+    {arity, variadic} = ops[op]
+    valid-arity = if variadic then args.length >= arity else args.length == arity
+    valid-arity and all validate-sexpr, args
 
 #
 # Postfix Validation
