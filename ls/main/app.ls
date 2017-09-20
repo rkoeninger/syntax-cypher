@@ -15,7 +15,7 @@ require! './cypher' : {
 require! \katex : {
     render-to-string
 }
-# require! \vue # not working
+require! \vue : Vue
 
 update-from-valid-code = !->
     it.postfix-disabled = false

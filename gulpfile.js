@@ -3,7 +3,8 @@ var del = require("del"),
     mocha = require("gulp-mocha")({reporter: "spec"}),
     gutil = require("gulp-util"),
     lsc = require("gulp-livescript")({bare: true}).on("error", gutil.log),
-    webpack = require("webpack-stream")({config: {output: {filename: "bundle.js"}}}),
+    webpack = require("webpack-stream")({config: {output: {filename: "bundle.js"}, resolve: {alias: {vue: "vue/dist/vue.js"}}}}),
+    // ^ vue alias is needed so we get the runtime+compiler version of vue instead of the default runtime-only version
 
     dest = gulp.dest.bind(gulp),
     src = gulp.src.bind(gulp),
