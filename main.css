@@ -1,16 +1,12 @@
-.box {
-    margin: 1em;
+body {
+    padding: 1em;
 }
-textarea.textarea {
-    resize: none;
-    width: 50em;
-    height: 2em;
-    padding: 0.3em;
+input {
     font-family: "Source Code Pro", "Monaco", "Inconsolata", monospace;
-    font-size: 125%;
 }
-textarea[readonly] {
+input.input[readonly] {
     border: none !important;
+    box-shadow: none !important;
 }
 .math {
     margin: 1em auto;
