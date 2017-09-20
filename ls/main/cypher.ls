@@ -48,6 +48,12 @@ ops =
 cons = (item, list) --> concat [[item], list]
 cons-last = (item, list) --> concat [list, [item]]
 is-array = is-type \Array
+is-number = is-type \Number
+try-parse-number = ->
+    if it == /^(\-|\+)?([0-9]+(\.[0-9]+)?)$/ then
+        parse-float it
+    else
+        it
 is-defined = -> not is-type \Undefined it
 unfold = (f) ->
     build = ->
@@ -122,12 +128,7 @@ class SexprParser
         start = @pos
         @skip-while (ch) -> ch != \( && ch != \) && ch == /\S/
         end = @pos
-        unparsed-literal = slice start, end, @text
-
-        if unparsed-literal == /^\x2D?\d/ then
-            parse-float unparsed-literal
-        else
-            unparsed-literal
+        try-parse-number slice start, end, @text
 
     read: ~>
         @skip-while (== /\s/)
@@ -199,7 +200,11 @@ export sexpr-to-tex = (expr, context = null) ->
         recur = (expr) -> sexpr-to-tex expr, precedence
         tex =
             switch op
-            | \* => "{#{map recur, args |> unwords}}"
+            | \* =>
+                if filter is-number, args |> (.length) |> (> 1) then
+                    "{#{map recur, args |> join ' * '}}"
+                else
+                    "{#{map recur, args |> unwords}}"
             | \+ => "{#{map recur, args |> join ' + '}}"
             | \- \^ => "{#{recur args[0]} #{op} #{recur args[1]}}"
             | \/ => "{\\frac #{recur args[0]} #{recur args[1]}}"
@@ -211,10 +216,10 @@ export sexpr-to-tex = (expr, context = null) ->
         else
             tex
     | otherwise
-        expr
+        expr.to-string!
 
 export string-to-postfix = ->
-    postfix = words it |> filter (== /^\S+$/)
+    postfix = words it |> filter (== /^\S+$/) |> map try-parse-number
     if postfix and validate-postfix postfix then
         postfix
 

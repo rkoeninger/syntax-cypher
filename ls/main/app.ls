@@ -47,9 +47,8 @@ update-from-postfix-code = !->
     if string-to-postfix it.postfix-code then
         sexpr = postfix-to-sexpr that
         it.sexpr-code = sexpr-to-string sexpr
-        tex = sexpr-to-tex sexpr
-        it.tex-code = tex
-        it.math-html = render-to-string tex
+        it.tex-code = sexpr-to-tex sexpr
+        it.math-html = render-to-string it.tex-code
         update-from-valid-code it
     else
         update-from-postfix-error it
@@ -57,9 +56,8 @@ update-from-postfix-code = !->
 update-from-sexpr-code = !->
     if string-to-sexpr it.sexpr-code then
         it.postfix-code = postfix-to-string sexpr-to-postfix that
-        tex = sexpr-to-tex that
-        it.tex-code = tex
-        it.math-html = render-to-string tex
+        it.tex-code = sexpr-to-tex that
+        it.math-html = render-to-string it.tex-code
         update-from-valid-code it
     else
         update-from-sexpr-error it

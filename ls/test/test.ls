@@ -1,7 +1,11 @@
 require! \assert : {
     deep-equal,
     equal,
+    ok,
     strict-equal
+}
+require! \prelude-ls : {
+    is-type
 }
 require! '../main/cypher' : {
     postfix-to-sexpr,
@@ -44,9 +48,19 @@ describe 'sexpr -> tex' !->
     specify 'should add parens when nested op of lower precendence' !->
         equal '{a {\\left( {b + c} \\right)}}', sexpr-to-tex [\* \a [\+ \b \c]]
 
+    specify 'should use explicit multiplication op when multiplying constants' !->
+        equal '{2 * 3}', sexpr-to-tex [\* 2 3]
+
+    specify 'should always return a string' !->
+        ok is-type \String sexpr-to-tex 0
+        ok is-type \String sexpr-to-tex \+
+
 describe 'string -> postfix' !->
     specify 'should handle arbitrary spacing' !->
         deep-equal [\a \b \+], string-to-postfix '   a  b    +  '
+
+    specify 'should parse numeric literals' !->
+        deep-equal [2 3 \+], string-to-postfix '2 3 +'
 
     specify 'should return undefined when line doesnt eval to single value' !->
         strict-equal undefined, string-to-postfix '1 2 3 +'
@@ -63,6 +77,9 @@ describe 'string -> sexpr' !->
 
     specify 'should handle arbitrary whitespace' !->
         deep-equal [\* [\+ \a 1] [\- \b 2]], string-to-sexpr '   ( *   ( + a    1 ) (- b   2) )   '
+
+    specify 'should parse numeric literals' !->
+        deep-equal [\+ 2 3], string-to-sexpr '(+ 2 3)'
 
     specify 'should read expressions that are falsy in javascript' !->
         deep-equal [\+ 0 0], string-to-sexpr '(+ 0 0)'
