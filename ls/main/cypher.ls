@@ -197,14 +197,12 @@ export sexpr-to-tex = (expr, context = null) ->
     | is-array expr
         [op, ...args] = combine-variadic expr
         {precedence} = ops[op]
-        recur = (expr) -> sexpr-to-tex expr, precedence
+        recur = sexpr-to-tex _, precedence
         tex =
             switch op
             | \* =>
-                if filter is-number, args |> (.length) |> (> 1) then
-                    "{#{map recur, args |> join ' * '}}"
-                else
-                    "{#{map recur, args |> unwords}}"
+                sep = if filter is-number, args |> (.length) |> (> 1) then ' * ' else ' '
+                "{#{map recur, args |> join sep}}"
             | \+ => "{#{map recur, args |> join ' + '}}"
             | \- \^ => "{#{recur args[0]} #{op} #{recur args[1]}}"
             | \/ => "{\\frac #{recur args[0]} #{recur args[1]}}"
