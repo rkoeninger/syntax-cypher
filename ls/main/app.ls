@@ -80,16 +80,16 @@ init-vue = !->
             <div>
                 <div class="box">
                     <p class="subtitle is-6">Reverse Polish Notation</p>
-                    <input v-bind:disabled="postfixDisabled" v-model="postfixCode" v-on:keyup="postfixChanged" v-bind:class="{ \'is-danger\': postfixError }" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+                    <input :disabled="postfixDisabled" v-model="postfixCode" @keyup="postfixChanged" :class="{ \'is-danger\': postfixError }" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
                 </div>
                 <div class="box">
                     <p class="subtitle is-6">Symbolic Expressions</p>
-                    <input v-bind:disabled="sexprDisabled" v-model="sexprCode" v-on:keyup="sexprChanged" v-bind:class="{ \'is-danger\': sexprError }" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+                    <input :disabled="sexprDisabled" v-model="sexprCode" @keyup="sexprChanged" :class="{ \'is-danger\': sexprError }" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
                 </div>
                 <div class="box">
                     <p class="subtitle is-6"><span style="font-family: \'CMU Serif\', cmr10, LMRoman10-Regular, \'Nimbus Roman No9 L\', \'Times New Roman\', Times, serif;">T<span style="vertical-align: -0.5ex; margin-left: -0.1667em; margin-right: -0.125em;">E</span>X</span><p>
-                    <input v-bind:disabled="texDisabled" v-model="texCode" class="input" readonly type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
-                    <div v-bind:disabled="mathDisabled" class="math" v-html="mathHtml"></div>
+                    <input :disabled="texDisabled" v-model="texCode" class="input" readonly type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+                    <div :disabled="mathDisabled" class="math" v-html="mathHtml"></div>
                 </div>
             </div>'
         methods:
