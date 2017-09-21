@@ -1,5 +1,13 @@
 body {
-    padding: 1em;
+    padding: 1rem;
+}
+header {
+    text-align: center;
+    margin: 1rem auto 2rem auto;
+}
+.title {
+    font-family: 'Libre Barcode 39 Text', cursive;
+    font-weight: 300;
 }
 input {
     font-family: "Source Code Pro", "Monaco", "Inconsolata", monospace;
@@ -9,7 +17,7 @@ input.input[readonly] {
     box-shadow: none !important;
 }
 .math {
-    margin: 1em auto;
+    margin: 1rem auto;
     font-size: 135%;
     letter-spacing: 120%;
 }
