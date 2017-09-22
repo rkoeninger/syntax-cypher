@@ -10,5 +10,11 @@ module.exports = {
         	// of vue instead of the default runtime-only version
             vue: "vue/dist/vue.js"
         }
+    },
+    module: {
+        loaders: [{
+            test: /.css$/,
+            use: ["style-loader", "css-loader"]
+        }]
     }
 };

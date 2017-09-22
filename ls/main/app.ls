@@ -16,6 +16,7 @@ require! \katex : {
     render-to-string
 }
 require! \vue : Vue
+require! '../../main.css' : _
 
 update-from-valid-code = !->
     it.postfix-disabled = false

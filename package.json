@@ -18,6 +18,7 @@
     "npm": "~5.3.0"
   },
   "devDependencies": {
+    "css-loader": "^0.28.7",
     "del": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-livescript": "^3.0.1",
@@ -26,6 +27,7 @@
     "livescript": "^1.4.0",
     "mocha": "^3.5.0",
     "prelude-ls": "^1.1.2",
+    "style-loader": "^0.18.2",
     "webpack-stream": "^4.0.0"
   },
   "dependencies": {
