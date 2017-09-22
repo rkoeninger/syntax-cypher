@@ -16,6 +16,8 @@ require! \katex : {
     render-to-string
 }
 require! \vue : Vue
+require! '../../node_modules/bulma/css/bulma.css' : _
+require! '../../node_modules/katex/dist/katex.css' : _
 require! '../../main.css' : _
 
 update-from-valid-code = !->

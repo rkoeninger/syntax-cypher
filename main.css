@@ -1,6 +1,4 @@
-/*@import url('https://fonts.googleapis.com/css?family=Libre+Barcode+39+Text');*/
-@import 'node_modules/katex/dist/katex.css';
-@import 'node_modules/bulma/css/bulma.css';
+@import url("https://fonts.googleapis.com/css?family=Libre+Barcode+39+Text");
 
 body {
     padding: 1rem;
@@ -10,7 +8,7 @@ header {
     margin: 1rem auto 2rem auto;
 }
 .title {
-    font-family: 'Libre Barcode 39 Text', cursive;
+    font-family: "Libre Barcode 39 Text", cursive;
     font-weight: 300;
 }
 input {
