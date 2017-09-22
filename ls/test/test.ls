@@ -2,7 +2,7 @@ require! \assert : {
     deep-equal,
     equal,
     ok,
-    strict-equal
+    throws
 }
 require! \prelude-ls : {
     is-type
@@ -62,14 +62,14 @@ describe 'string -> postfix' !->
     specify 'should parse numeric literals' !->
         deep-equal [2 3 \+], string-to-postfix '2 3 +'
 
-    specify 'should return undefined when line doesnt eval to single value' !->
-        strict-equal undefined, string-to-postfix '1 2 3 +'
+    specify 'should throw when line doesnt eval to single value' !->
+        throws !-> string-to-postfix '1 2 3 +'
 
-    specify 'should return undefined on stack underflow' !->
-        strict-equal undefined, string-to-postfix '1 +'
+    specify 'should throw on stack underflow' !->
+        throws !-> string-to-postfix '1 +'
 
-    specify 'should return undefined when input is blank' !->
-        strict-equal undefined, string-to-postfix ''
+    specify 'should throw when input is blank' !->
+        throws !-> string-to-postfix ''
 
 describe 'string -> sexpr' !->
     specify 'should handle nested expressions' !->
@@ -84,25 +84,25 @@ describe 'string -> sexpr' !->
     specify 'should read expressions that are falsy in javascript' !->
         deep-equal [\+ 0 0], string-to-sexpr '(+ 0 0)'
 
-    specify 'should return undefined when parens unmatched' !->
-        strict-equal undefined, string-to-sexpr '(+ 1 2'
-        strict-equal undefined, string-to-sexpr '(+ 1 () 2'
+    specify 'should throw when parens unmatched' !->
+        throws !-> string-to-sexpr '(+ 1 2'
+        throws !-> string-to-sexpr '(+ 1 () 2'
 
-    specify 'should return undefined when application starts with non-operator' !->
-        strict-equal undefined, string-to-sexpr '(1 2)'
+    specify 'should throw when application starts with non-operator' !->
+        throws !-> string-to-sexpr '(1 2)'
 
-    specify 'should return undefined when application starts with unknown operator' !->
-        strict-equal undefined, string-to-sexpr '($ 1 2)'
+    specify 'should throw when application starts with unknown operator' !->
+        throws !-> string-to-sexpr '($ 1 2)'
 
-    specify 'should return undefined when argument count does not fit arity/variadicity' !->
-        strict-equal undefined, string-to-sexpr '(+ 1)'
-        strict-equal undefined, string-to-sexpr '(- 1 2 3)'
+    specify 'should throw when argument count does not fit arity/variadicity' !->
+        throws !-> string-to-sexpr '(+ 1)'
+        throws !-> string-to-sexpr '(- 1 2 3)'
 
-    specify 'should return undefined when additional non-space chars after complete expression' !->
-        strict-equal undefined, string-to-sexpr '(+ a b)  0  '
+    specify 'should throw when additional non-space chars after complete expression' !->
+        throws !-> string-to-sexpr '(+ a b)  0  '
 
-    specify 'should return undefined when application is empty' !->
-        strict-equal undefined, string-to-sexpr '()'
+    specify 'should throw when application is empty' !->
+        throws !-> string-to-sexpr '()'
 
-    specify 'should return undefined when input is blank' !->
-        strict-equal undefined, string-to-sexpr ''
+    specify 'should throw when input is blank' !->
+        throws !-> string-to-sexpr ''

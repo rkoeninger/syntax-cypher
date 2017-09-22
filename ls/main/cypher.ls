@@ -1,9 +1,9 @@
 require! \prelude-ls : {
-    all,
     any,
     chars,
     concat,
     concat-map,
+    each,
     filter,
     fold,
     head,
@@ -142,35 +142,39 @@ class SexprParser
         | otherwise => @read-literal!
 
 validate-sexpr = (expr) ->
-    if not is-array expr then return true
-    [op, ...args] = expr
-    if not op of ops then return false
-    {arity, variadic} = ops[op]
-    valid-arity = if variadic then args.length >= arity else args.length == arity
-    valid-arity and all validate-sexpr, args
+    if is-array expr then
+        [op, ...args] = expr
+        if op of ops then
+            {arity, variadic} = ops[op]
+            if args.length < arity then
+                throw new Error "Too few arguments for operator #{op}"
+            if not variadic and args.length != arity
+                throw new Error "Too many arguments for operator #{op}"
+            each validate-sexpr, args
+        else
+            throw new Error "Unrecognized operator #{op}"
 
 #
 # Postfix Validation
 #
 
-eval-postfix = (line) ->
-    try
-        push-word = (stack, item) ->
-            | item of ops
-                {arity} = ops[item]
-                if stack.length < arity then
-                    throw new Error 'Stack underflow'
-                [args, stack] = split-at arity, stack
-                reverse args |> cons item |> cons _, stack
-            | otherwise
-                cons item, stack
-        fold push-word, [], line
-    catch
-        undefined
+export eval-postfix = (line) ->
+    push-word = (stack, item) ->
+        | item of ops
+            {arity} = ops[item]
+            if stack.length < arity then
+                throw new Error 'Stack underflow'
+            [args, stack] = split-at arity, stack
+            reverse args |> cons item |> cons _, stack
+        | otherwise
+            cons item, stack
+    fold push-word, [], line
 
-validate-postfix = (line) ->
-    if eval-postfix line then
-        that.length == 1
+export validate-postfix = (line) ->
+    if eval-postfix line |> (.length) |> (== 1) then
+        line
+    else
+        throw new Error 'Line does not leave exactly 1 value on the stack'
 
 #
 # Exported Conversion Functions
@@ -216,15 +220,12 @@ export sexpr-to-tex = (expr, context = null) ->
     | otherwise
         expr.to-string!
 
-export string-to-postfix = ->
-    postfix = words it |> filter (== /^\S+$/) |> map try-parse-number
-    if postfix and validate-postfix postfix then
-        postfix
+export string-to-postfix = -> words it |> filter (== /^\S+$/) |> map try-parse-number |> validate-postfix
 
 export string-to-sexpr = ->
-    try
-        parser = new SexprParser it
-        sexpr = parser.read!
-        if validate-sexpr sexpr and not parser.has-remaining-input! then sexpr
-    catch
-        undefined
+    parser = new SexprParser it
+    sexpr = parser.read!
+    if validate-sexpr sexpr and not parser.has-remaining-input! then
+        sexpr
+    else
+        throw new Error 'Excess syntax beyond end of first expression'
