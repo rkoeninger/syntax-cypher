@@ -22,45 +22,47 @@ update-from-valid-code = !->
     it.sexpr-disabled = false
     it.tex-disabled = false
     it.math-disabled = false
-    it.postfix-error = false
-    it.sexpr-error = false
+    it.postfix-error = ''
+    it.sexpr-error = ''
 
-update-from-postfix-error = !->
-    it.postfix-disabled = false
-    it.sexpr-disabled = true
-    it.tex-disabled = true
-    it.math-disabled = true
-    it.postfix-error = true
-    it.sexpr-error = false
-    it.math-html = ''
+update-from-postfix-error = (data, message) ->
+    data.postfix-disabled = false
+    data.sexpr-disabled = true
+    data.tex-disabled = true
+    data.math-disabled = true
+    data.postfix-error = message
+    data.sexpr-error = ''
+    data.math-html = ''
 
-update-from-sexpr-error = !->
-    it.postfix-disabled = true
-    it.sexpr-disabled = false
-    it.tex-disabled = true
-    it.math-disabled = true
-    it.postfix-error = false
-    it.sexpr-error = true
-    it.math-html = ''
+update-from-sexpr-error = (data, message) ->
+    data.postfix-disabled = true
+    data.sexpr-disabled = false
+    data.tex-disabled = true
+    data.math-disabled = true
+    data.postfix-error = ''
+    data.sexpr-error = message
+    data.math-html = ''
 
 update-from-postfix-code = !->
-    if string-to-postfix it.postfix-code then
-        sexpr = postfix-to-sexpr that
+    try
+        postfix = string-to-postfix it.postfix-code
+        sexpr = postfix-to-sexpr postfix
         it.sexpr-code = sexpr-to-string sexpr
         it.tex-code = sexpr-to-tex sexpr
         it.math-html = render-to-string it.tex-code
         update-from-valid-code it
-    else
-        update-from-postfix-error it
+    catch
+        update-from-postfix-error it, e.message
 
 update-from-sexpr-code = !->
-    if string-to-sexpr it.sexpr-code then
-        it.postfix-code = postfix-to-string sexpr-to-postfix that
-        it.tex-code = sexpr-to-tex that
+    try
+        sexpr = string-to-sexpr it.sexpr-code
+        it.postfix-code = postfix-to-string sexpr-to-postfix sexpr
+        it.tex-code = sexpr-to-tex sexpr
         it.math-html = render-to-string it.tex-code
         update-from-valid-code it
-    else
-        update-from-sexpr-error it
+    catch
+        update-from-sexpr-error it, e.message
 
 init-vue = !->
     new Vue do
@@ -68,10 +70,10 @@ init-vue = !->
         data:
             postfix-code: 'b neg b 2 ^ 4 a c * * - sqrt +/- 2 a * /'
             postfix-disabled: false
-            postfix-error: false
+            postfix-error: ''
             sexpr-code: '(/ (+/- (neg b) (sqrt (- (^ b 2) (* 4 a c)))) (* 2 a))'
             sexpr-disabled: false
-            sexpr-error: false
+            sexpr-error: ''
             tex-code: '{\\frac {{- b} \\pm {\\sqrt {{b ^ 2} - {4 a c}}}} {2 a}}'
             tex-disabled: false
             math-html: render-to-string '{\\frac {{- b} \\pm {\\sqrt {{b ^ 2} - {4 a c}}}} {2 a}}'
@@ -79,11 +81,25 @@ init-vue = !->
         template: '
             <div>
                 <div class="box">
-                    <p class="subtitle is-6">Reverse Polish Notation</p>
+                    <div class="level">
+                        <div class="level-left">
+                            <p class="subtitle is-6 level-item">Reverse Polish Notation</p>
+                        </div>
+                        <div class="level-right">
+                            <p v-if="postfixError" v-text="postfixError" class="tag is-danger"></p>
+                        </div>
+                    </div>
                     <input :disabled="postfixDisabled" v-model="postfixCode" @keyup="postfixChanged" :class="{ \'is-danger\': postfixError }" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                 </div>
                 <div class="box">
-                    <p class="subtitle is-6">Symbolic Expressions</p>
+                    <div class="level">
+                        <div class="level-left">
+                            <p class="subtitle is-6">Symbolic Expressions</p>
+                        </div>
+                        <div class="level-right">
+                            <p v-if="sexprError" v-text="sexprError" class="tag is-danger"></p>
+                        </div>
+                    </div>
                     <input :disabled="sexprDisabled" v-model="sexprCode" @keyup="sexprChanged" :class="{ \'is-danger\': sexprError }" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                 </div>
                 <div class="box">
