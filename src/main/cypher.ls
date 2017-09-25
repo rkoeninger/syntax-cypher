@@ -158,7 +158,7 @@ validate-sexpr = (expr) ->
 # Postfix Validation
 #
 
-export eval-postfix = (line) ->
+eval-postfix = (line) ->
     push-word = (stack, item) ->
         | item of ops
             {arity} = ops[item]
@@ -170,7 +170,7 @@ export eval-postfix = (line) ->
             cons item, stack
     fold push-word, [], line
 
-export validate-postfix = (line) ->
+validate-postfix = (line) ->
     if eval-postfix line |> (.length) |> (== 1) then
         line
     else
