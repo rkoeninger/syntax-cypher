@@ -1,7 +1,10 @@
-var path = require("path");
+const path = require("path");
 
 module.exports = {
+    mode: "development",
+    entry: "./build/main/app.js",
     output: {
+        path: path.resolve(__dirname, "dist"),
         filename: "bundle.js"
     },
     resolve: {
@@ -12,20 +15,15 @@ module.exports = {
         }
     },
     module: {
-        loaders: [{
-            test: /.css$/,
+        rules: [{
+            test: /\.css$/,
             use: ["style-loader", "css-loader"]
         }, {
-            test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-            loader: "file-loader",
-            options: {
-                name: "[name].[ext]",
-                outputPath: "fonts/",
-                publicPath: "dist/"
-            }
+            test: /\.(png|svg|jpg|gif)$/,
+            use: ["file-loader"]
         }, {
-            test: /^http(s)?\;\/\//,
-            loader: "url-loader"
+            test: /\.(woff|woff2|eot|ttf|otf)$/,
+            use: ["file-loader"]
         }]
     }
 };
