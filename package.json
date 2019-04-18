@@ -16,17 +16,18 @@
   "devDependencies": {
     "livescript": "^1.6.0",
     "mocha": "^6.1.3",
-    "prelude-ls": "^1.1.2",
-    "rollup": "^1.10.0"
+    "parcel": "^1.12.3"
   },
   "dependencies": {
     "bulma": "^0.5.3",
     "katex": "^0.8.3",
+    "prelude-ls": "^1.1.2",
     "vue": "^2.6.10"
   },
   "scripts": {
     "build": "lsc -cbo build src",
     "test": "mocha build/test/**/*.js",
-    "bundle": "rollup build/main/app.js build/main/cypher.js -f cjs -d dist"
+    "start": "parcel index.html",
+    "bundle": "parcel build index.html"
   }
 }
