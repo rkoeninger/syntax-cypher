@@ -184,7 +184,7 @@ validate-postfix = (line) ->
 
 export asm-to-string = -> map (join ' '), it |> join '; '
 
-export postfix-to-asm = -> [[\ADD, \R1, 1], [\SUB, 0, \R2]]
+export postfix-to-asm = -> [[\ADD, \R1, 1], [\SUB, 0, \R2]] # TODO: implement this
 
 export postfix-to-sexpr = eval-postfix >> head >> combine-variadic
 

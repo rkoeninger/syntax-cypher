@@ -21,6 +21,14 @@ require! {
   }
 }
 
+describe 'asm -> string' !->
+  specify 'should provide consistent spacing' !->
+    equal 'ADD R1 1; SUB 0 R2', asm-to-string [[\ADD, \R1, 1], [\SUB, 0, \R2]]
+
+describe 'postfix -> asm' !->
+  specify 'should ...' !->
+    equal 1, 1
+
 describe 'postfix -> sexpr' !->
   specify 'should combine variadic applications' !->
     deep-equal [\+ 1 2 3 4], postfix-to-sexpr [1 2 3 4 \+ \+ \+]
