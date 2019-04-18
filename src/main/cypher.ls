@@ -27,9 +27,9 @@ require! {
 #
 
 class Operator
-  (@name, @arity, @variadic, @fixity, @precedence) -> this
+  (@name, @arity, @variadic, @fixity, @precedence) ~>
 
-defop = -> [it, new Operator ...]
+defop = -> [it, Operator ...]
 
 ops =
   pairs-to-obj [
@@ -110,9 +110,7 @@ combine-variadic = (expr) ->
 #
 
 class SexprParser
-  (text) ->
-    @pos = 0
-    @text = text
+  (@text) ~> @pos = 0
 
   is-done: -> @text.length <= @pos
 
@@ -229,7 +227,7 @@ export sexpr-to-tex = (expr, context = null) ->
 export string-to-postfix = -> words it |> filter (== /^\S+$/) |> map try-parse-number |> validate-postfix
 
 export string-to-sexpr = ->
-  parser = new SexprParser it
+  parser = SexprParser it
   sexpr = parser.read!
   if validate-sexpr sexpr and not parser.has-remaining-input! then
     sexpr

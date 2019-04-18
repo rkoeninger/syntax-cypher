@@ -61,7 +61,7 @@ update-from-postfix-code = !->
     update-from-valid-code it
   catch
     update-from-postfix-error it, e.message
- 
+
 update-from-sexpr-code = !->
   try
     sexpr = string-to-sexpr it.sexpr-code
