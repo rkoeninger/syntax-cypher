@@ -78,6 +78,8 @@ init-vue = !->
   new Vue do
     el: 'main'
     data:
+      asm-code: 'ADD R1 1; SUB 0 R2'
+      asm-disabled: false
       postfix-code: 'b neg b 2 ^ 4 a c * * - sqrt +/- 2 a * /'
       postfix-disabled: false
       postfix-error: ''
@@ -113,14 +115,7 @@ init-vue = !->
           <input :disabled="sexprDisabled" v-model="sexprCode" @keyup="sexprChanged" :class="{ \'is-danger\': sexprError }" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         </div>
         <div class="box">
-          <div class="level">
-            <div class="level-left">
-              <p class="subtitle is-6">Assembly</p>
-            </div>
-            <div class="level-right">
-              <p v-if="asmError" v-text="asmError" class="tag is-danger"></p>
-            </div>
-          </div>
+          <p class="subtitle is-6">Assembly</p>
           <input :disabled="asmDisabled" v-model="asmCode" class="input" readonly type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         </div>
         <div class="box">
