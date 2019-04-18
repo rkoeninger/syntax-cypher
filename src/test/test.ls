@@ -1,20 +1,24 @@
-require! \assert : {
-  deep-equal,
-  equal,
-  ok,
-  throws
-}
-require! \prelude-ls : {
-  is-type
-}
-require! '../main/cypher' : {
-  postfix-to-sexpr,
-  postfix-to-string,
-  sexpr-to-postfix,
-  sexpr-to-string,
-  sexpr-to-tex,
-  string-to-postfix,
-  string-to-sexpr
+require! {
+  \assert : {
+    deep-equal
+    equal
+    ok
+    throws
+  }
+  \prelude-ls : {
+    is-type
+  }
+  '../main/cypher' : {
+    asm-to-string
+    postfix-to-asm
+    postfix-to-sexpr
+    postfix-to-string
+    sexpr-to-postfix
+    sexpr-to-string
+    sexpr-to-tex
+    string-to-postfix
+    string-to-sexpr
+  }
 }
 
 describe 'postfix -> sexpr' !->

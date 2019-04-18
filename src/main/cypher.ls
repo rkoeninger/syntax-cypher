@@ -1,23 +1,25 @@
-require! \prelude-ls : {
-  any,
-  chars,
-  concat,
-  concat-map,
-  each,
-  filter,
-  fold,
-  head,
-  is-type,
-  join,
-  map,
-  pairs-to-obj,
-  reverse,
-  slice,
-  split-at,
-  tail,
-  unfoldr,
-  unwords,
-  words
+require! {
+  \prelude-ls : {
+    any
+    chars
+    concat
+    concat-map
+    each
+    filter
+    fold
+    head
+    is-type
+    join
+    map
+    pairs-to-obj
+    reverse
+    slice
+    split-at
+    tail
+    unfoldr
+    unwords
+    words
+  }
 }
 
 #
@@ -179,6 +181,10 @@ validate-postfix = (line) ->
 #
 # Exported Conversion Functions
 #
+
+export asm-to-string = -> map (join ' '), it |> join '; '
+
+export postfix-to-asm = -> [[\ADD, \R1, 1], [\SUB, 0, \R2]]
 
 export postfix-to-sexpr = eval-postfix >> head >> combine-variadic
 
