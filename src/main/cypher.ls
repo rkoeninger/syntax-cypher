@@ -182,7 +182,18 @@ validate-postfix = (line) ->
 
 export asm-to-string = -> map (join ' '), it |> join '; '
 
-export postfix-to-asm = -> [[\ADD, \R1, 1], [\SUB, 0, \R2]] # TODO: implement this
+export postfix-to-asm = (line) ->
+  process-word = ([stack, asm], item) ->
+    | is-number item
+      [stack, cons [\MOV ], asm] # load constant
+    | ops[item]
+      [stack, asm] # stage arguments, exec op
+    | _
+      [stack, asm] # load variable
+  [stack, asm] = fold process-word, [[0], []], line
+  if stack.length != 1
+    throw new Error 'Line does not leave exactly 1 value on the stack'
+  asm
 
 export postfix-to-sexpr = eval-postfix >> head >> combine-variadic
 
