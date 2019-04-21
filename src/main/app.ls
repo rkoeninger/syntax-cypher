@@ -30,25 +30,25 @@ update-from-valid-code = !->
   it.postfix-error = ''
   it.sexpr-error = ''
 
-update-from-postfix-error = (data, message) !->
-  data.asm-disabled = true
-  data.postfix-disabled = false
-  data.sexpr-disabled = true
-  data.tex-disabled = true
-  data.math-disabled = true
-  data.postfix-error = message
-  data.sexpr-error = ''
-  data.math-html = ''
+update-from-postfix-error = (it, message) !->
+  it.asm-disabled = true
+  it.postfix-disabled = false
+  it.sexpr-disabled = true
+  it.tex-disabled = true
+  it.math-disabled = true
+  it.postfix-error = message
+  it.sexpr-error = ''
+  it.math-html = ''
 
-update-from-sexpr-error = (data, message) !->
-  data.asm-disabled = true
-  data.postfix-disabled = true
-  data.sexpr-disabled = false
-  data.tex-disabled = true
-  data.math-disabled = true
-  data.postfix-error = ''
-  data.sexpr-error = message
-  data.math-html = ''
+update-from-sexpr-error = (it, message) !->
+  it.asm-disabled = true
+  it.postfix-disabled = true
+  it.sexpr-disabled = false
+  it.tex-disabled = true
+  it.math-disabled = true
+  it.postfix-error = ''
+  it.sexpr-error = message
+  it.math-html = ''
 
 update-from-postfix-code = !->
   try

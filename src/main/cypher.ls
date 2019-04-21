@@ -70,7 +70,7 @@ unfold = (f) ->
 unvary-application = (op, arity, args) ->
   | args.length <= arity
     cons op, args
-  | otherwise
+  | _
     [these, those] = split-at (arity - 1), args
     nested = unvary-application op, arity, those
     cons op, these |> cons-last nested
@@ -91,7 +91,7 @@ split-variadic = (expr) ->
       unvary-application op, arity, args
     else
       map split-variadic, args |> cons op
-  | otherwise
+  | _
     expr
 
 combine-variadic = (expr) ->
@@ -102,7 +102,7 @@ combine-variadic = (expr) ->
       vary-application op, arity, args |> cons op
     else
       map combine-variadic, args |> cons op
-  | otherwise
+  | _
     expr
 
 #
@@ -139,7 +139,7 @@ class SexprParser
     switch @current!
     | \( => @skip-one!; unfold @read
     | \) => @skip-one!; undefined
-    | otherwise => @read-literal!
+    | _ => @read-literal!
 
 validate-sexpr = (expr) ->
   if is-array expr then
@@ -166,7 +166,7 @@ eval-postfix = (line) ->
         throw new Error 'Stack underflow'
       [args, stack] = split-at arity, stack
       reverse args |> cons item |> cons _, stack
-    | otherwise
+    | _
       cons item, stack
   fold push-word, [], line
 
@@ -192,13 +192,13 @@ export sexpr-to-postfix = combine-variadic >> split-variadic >> (expr) ->
   | is-array expr
     [op, ...args] = expr
     concat-map sexpr-to-postfix, args |> cons-last op
-  | otherwise
+  | _
     [expr]
 
 export sexpr-to-string = (expr) ->
   | is-array expr
     "(#{map sexpr-to-string, expr |> unwords})"
-  | otherwise
+  | _
     expr
 
 export sexpr-to-tex = (expr, context = null) ->
@@ -221,7 +221,7 @@ export sexpr-to-tex = (expr, context = null) ->
       "{\\left( #{tex} \\right)}"
     else
       tex
-  | otherwise
+  | _
     expr.to-string!
 
 export string-to-postfix = -> words it |> filter (== /^\S+$/) |> map try-parse-number |> validate-postfix
