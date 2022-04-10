@@ -15,7 +15,7 @@
   "homepage": "https://github.com/rkoeninger/syntax-cypher",
   "devDependencies": {
     "livescript": "^1.6.0",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "mocha": "^6.2.2",
     "parcel": "^1.12.4"
   },
