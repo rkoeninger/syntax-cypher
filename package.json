@@ -16,7 +16,7 @@
   "devDependencies": {
     "livescript": "^1.6.0",
     "minimist": "^1.2.6",
-    "mocha": "^6.2.2",
+    "mocha": "^10.1.0",
     "parcel": "^1.12.4"
   },
   "dependencies": {
